@@ -7,7 +7,7 @@ export default function RootLayout({ children }) {
   return (
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
-        <body className="min-h-screen bg-background text-foreground">
+        <body className="min-h-screen bg-background text-foreground antialiased">
           <ThemeProvider
             attribute="class"
             defaultTheme="system"

@@ -11,13 +11,13 @@ export default function ReadMore({ text, maxChars = 300 }) {
 
   return (
     <div>
-      <p className="whitespace-pre-line">
+      <p className="whitespace-pre-line text-sm sm:text-base leading-relaxed">
         {expanded ? text : text.slice(0, maxChars) + "..."}
       </p>
 
       <button
         onClick={() => setExpanded((v) => !v)}
-        className="mt-1 text-sm text-primary hover:underline"
+        className="mt-2 text-sm font-medium text-primary hover:underline"
       >
         {expanded ? "Show less" : "Read more"}
       </button>

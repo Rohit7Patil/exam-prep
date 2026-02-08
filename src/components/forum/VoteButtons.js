@@ -27,24 +27,24 @@ export default function VoteButtons({
       <SignedIn>
         <button
           onClick={() => handleVote(1)}
-          className={`rounded p-1 transition ${
+          className={`rounded p-2 sm:p-1 transition ${
             userVote === 1 ? "text-primary" : "hover:text-foreground"
           }`}
           aria-label="Upvote"
         >
-          <ChevronUp className="h-5 w-5" />
+          <ChevronUp className="h-4 w-4 sm:h-5 sm:w-5" />
         </button>
 
         <span className="text-sm font-medium text-foreground">{score}</span>
 
         <button
           onClick={() => handleVote(-1)}
-          className={`rounded p-1 transition ${
+          className={`rounded p-2 sm:p-1 transition ${
             userVote === -1 ? "text-destructive" : "hover:text-foreground"
           }`}
           aria-label="Downvote"
         >
-          <ChevronDown className="h-5 w-5" />
+          <ChevronDown className="h-4 w-4 sm:h-5 sm:w-5" />
         </button>
       </SignedIn>
 

@@ -37,17 +37,17 @@ export default function CreateThreadDialog() {
     <>
       <SignedOut>
         <SignInButton mode="modal">
-          <Button>Create Thread</Button>
+          <Button className="w-full sm:w-auto">Create Thread</Button>
         </SignInButton>
       </SignedOut>
 
       <SignedIn>
-        <Button onClick={() => setOpen(true)}>Create Thread</Button>
+        <Button onClick={() => setOpen(true)} className="w-full sm:w-auto">Create Thread</Button>
       </SignedIn>
 
       {open && (
         <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/40">
-          <div className="w-full max-w-lg rounded-lg bg-background p-6 shadow-lg">
+          <div className="w-full max-w-lg rounded-lg bg-background p-4 sm:p-6 shadow-lg">
             <h2 className="text-lg font-semibold mb-4">Create new thread</h2>
 
             <div className="space-y-4">

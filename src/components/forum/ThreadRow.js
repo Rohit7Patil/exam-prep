@@ -7,7 +7,7 @@ export default function ThreadRow({ thread }) {
       href={`/forum/${thread.id}`}
       className="block rounded-lg border bg-card p-4 transition hover:shadow-sm"
     >
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
         <div className="space-y-2">
           <div className="flex items-center gap-2">
             {thread.pinned && <Pin className="h-4 w-4 text-primary" />}
@@ -31,7 +31,7 @@ export default function ThreadRow({ thread }) {
           </div>
         </div>
 
-        <div className="flex flex-col items-end gap-2 text-xs text-muted-foreground">
+        <div className="flex flex-row sm:flex-col items-start sm:items-end gap-3 text-xs text-muted-foreground">
           <span className="flex items-center gap-1">
             <MessageSquare className="h-3 w-3" />
             {thread.repliesCount}

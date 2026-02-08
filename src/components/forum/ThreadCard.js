@@ -12,7 +12,7 @@ export default function ThreadCard({
     <Link href={`/forum/${category}/${slug}`} className="group block">
       <div
         className="
-        rounded-xl border bg-card p-5
+        rounded-xl border bg-card p-4 sm:p-5
         transition-all
         hover:border-primary/40
         hover:shadow-sm

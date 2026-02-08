@@ -12,10 +12,13 @@ export default function ReplyItem({ reply, depth = 0 }) {
 
   return (
     <div
-      className={`rounded-md border p-4 border-l-2 ${
+      className={`rounded-md border p-3 sm:p-4 border-l-2 ${
         reply.pinned ? "border-primary bg-primary/5" : "border-l-muted"
       }`}
-      style={{ marginLeft: depth * 24, opacity }}
+      style={{
+        marginLeft: depth * (window.innerWidth < 640 ? 12 : 24),
+        opacity,
+      }}
     >
       {/* 🔹 PINNED LABEL */}
       {reply.pinned && (
@@ -25,7 +28,7 @@ export default function ReplyItem({ reply, depth = 0 }) {
         </div>
       )}
 
-      <div className="flex gap-4">
+      <div className="flex gap-3 sm:gap-4">
         {/* Votes */}
         <VoteButtons votes={reply.votes ?? 0} />
 
@@ -48,13 +51,6 @@ export default function ReplyItem({ reply, depth = 0 }) {
 
           {/* Actions */}
           <div className="mt-2 flex items-center gap-4 text-sm text-muted-foreground">
-            {/* <button
-              onClick={() => setShowReplyBox((v) => !v)}
-              className="flex items-center gap-1 hover:text-foreground"
-            >
-              <MessageSquare className="h-4 w-4" />
-              Reply
-            </button> */}
             <SignedIn>
               <button
                 onClick={() => setShowReplyBox((v) => !v)}

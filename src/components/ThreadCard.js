@@ -11,12 +11,16 @@ export default function ThreadCard({
   return (
     <Link
       href={`/forum/${category}/${slug}`}
-      className="block rounded-md border p-4 hover:bg-muted/50 transition"
+      className="block rounded-md border p-3 sm:p-4 transition hover:bg-muted/50"
     >
-      <h2 className="font-semibold text-lg mb-1">{title}</h2>
+      <h2 className="mb-1 text-base sm:text-lg font-semibold leading-snug">
+        {title}
+      </h2>
 
-      <p className="text-sm text-muted-foreground">
-        By {author} · {replies} replies · Last active {lastActive}
+      <p className="flex flex-wrap gap-x-2 gap-y-1 text-xs sm:text-sm text-muted-foreground">
+        <span>By {author}</span>
+        <span>• {replies} replies</span>
+        <span className="hidden sm:inline">• Last active {lastActive}</span>
       </p>
     </Link>
   );

@@ -1,58 +1,61 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { useState } from "react"
+import Link from "next/link";
+import { useState } from "react";
 
 export default function HeroSection() {
-  const [query, setQuery] = useState("")
+  const [query, setQuery] = useState("");
 
   return (
-    <section className="py-20 md:py-28">
-      <div className="container mx-auto px-6 text-center max-w-3xl">
-        <h1 className="text-4xl md:text-5xl font-bold mb-6">
-          Ace Your <span className="text-primary">Competitive Exams</span>
+    <section className="py-16 sm:py-24">
+      <div className="mx-auto max-w-3xl px-4 text-center">
+        <h1 className="mb-4 text-3xl font-bold sm:text-5xl">
+          Learn. Discuss. <span className="text-primary">Crack Exams.</span>
         </h1>
 
-        <p className="text-muted-foreground text-lg mb-8">
-          Practice questions, discuss strategies, and learn with aspirants across India.
+        <p className="mb-8 text-base text-muted-foreground sm:text-lg">
+          A community-driven platform to discuss questions, share strategies,
+          and learn together with serious aspirants.
         </p>
 
+        {/* Search */}
         <form
           onSubmit={(e) => {
-            e.preventDefault()
+            e.preventDefault();
             if (query.trim()) {
-              alert(`Search later: ${query}`)
+              alert(`Search later: ${query}`);
             }
           }}
-          className="flex gap-2 max-w-xl mx-auto mb-8"
+          className="mx-auto mb-8 flex max-w-xl flex-col gap-2 sm:flex-row"
         >
           <input
-            className="flex-1 border rounded-md px-4 py-3 bg-background"
-            placeholder="Search questions by topic or keyword..."
+            className="flex-1 rounded-md border bg-background px-4 py-3 text-sm sm:text-base"
+            placeholder="Search discussions, tags, or topics..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
-          <button className="px-6 py-3 rounded-md bg-primary text-primary-foreground">
+          <button className="rounded-md bg-primary px-6 py-3 text-sm text-primary-foreground sm:text-base">
             Search
           </button>
         </form>
 
-        <div className="flex justify-center gap-4 flex-wrap">
+        {/* CTAs */}
+        <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link
-            href="/questions"
-            className="px-6 py-3 rounded-md bg-primary text-primary-foreground"
+            href="/forum"
+            className="w-full rounded-md bg-primary px-6 py-3 text-center text-sm text-primary-foreground sm:w-auto sm:text-base"
           >
-            Browse Questions
+            Join the Forum
           </Link>
 
           <Link
-            href="/forum"
-            className="px-6 py-3 rounded-md border"
+            href="/questions"
+            className="w-full rounded-md border px-6 py-3 text-center text-sm sm:w-auto sm:text-base"
           >
-            Join Discussion Forum
+            Browse Questions
           </Link>
         </div>
       </div>
     </section>
-  )
+  );
 }

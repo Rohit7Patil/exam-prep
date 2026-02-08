@@ -1,48 +1,49 @@
 "use client";
 
+import ReadMore from "@/components/common/ReadMore";
+import ReplyList from "@/components/forum/ReplyList";
+import VoteButtons from "@/components/forum/VoteButtons";
+import { THREADS } from "@/data/threads";
 import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
+import { Eye, MessageSquare, Pin, Tag } from "lucide-react";
 import { notFound } from "next/navigation";
 import { use, useState } from "react";
-import { THREADS } from "@/data/threads";
-import VoteButtons from "@/components/forum/VoteButtons";
-import ReplyList from "@/components/forum/ReplyList";
-import ReadMore from "@/components/common/ReadMore";
-import { Eye, MessageSquare, Pin, Tag } from "lucide-react";
 
 export default function ThreadPage({ params }) {
-  // ✅ unwrap params correctly
   const { thread } = use(params);
-
   const threadData = THREADS.find((t) => t.id === thread);
   if (!threadData) notFound();
 
   const [sort, setSort] = useState("top");
 
   const sortedReplies = [...(threadData.replies || [])].sort((a, b) => {
-    // pinned always first
     if (a.pinned && !b.pinned) return -1;
     if (!a.pinned && b.pinned) return 1;
-
-    if (sort === "new") {
-      return b.createdAt - a.createdAt;
-    }
+    if (sort === "new") return b.createdAt - a.createdAt;
     return (b.votes ?? 0) - (a.votes ?? 0);
   });
 
   return (
-    <div className="container mx-auto max-w-3xl px-4 py-8">
+    <div className="mx-auto max-w-3xl px-4 py-6 sm:py-8">
       {/* Header */}
-      <div className="mb-4 flex gap-4">
-        <VoteButtons votes={threadData.votes ?? 0} />
+      <div className="mb-4 grid grid-cols-[auto_1fr] gap-3 sm:gap-6">
+        {/* Votes */}
+        <div className="flex justify-center pt-1">
+          <VoteButtons votes={threadData.votes ?? 0} />
+        </div>
 
-        <div className="flex-1">
-          <div className="flex items-center gap-2">
-            {threadData.pinned && <Pin className="h-4 w-4 text-primary" />}
-            <h1 className="text-2xl font-bold">{threadData.title}</h1>
+        <div>
+          <div className="flex items-start gap-2">
+            {threadData.pinned && (
+              <Pin className="mt-1 h-4 w-4 shrink-0 text-primary" />
+            )}
+            <h1 className="text-xl font-bold leading-snug sm:text-2xl">
+              {threadData.title}
+            </h1>
           </div>
 
           {/* Tags */}
-          <div className="mt-2 flex flex-wrap gap-2">
+          <div className="mt-2 flex flex-wrap gap-1.5">
             {threadData.tags.map((tag) => (
               <span
                 key={tag}
@@ -55,7 +56,7 @@ export default function ThreadPage({ params }) {
           </div>
 
           {/* Meta */}
-          <div className="mt-3 flex flex-wrap gap-6 text-sm text-muted-foreground">
+          <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground sm:text-sm">
             <span className="flex items-center gap-1">
               <MessageSquare className="h-4 w-4" />
               {threadData.repliesCount} replies
@@ -70,17 +71,17 @@ export default function ThreadPage({ params }) {
       </div>
 
       {/* Content */}
-      <article className="prose prose-neutral dark:prose-invert max-w-none whitespace-pre-line border-b pb-6">
+      <article className="prose prose-sm sm:prose-base prose-neutral dark:prose-invert max-w-none border-b pb-5">
         <ReadMore text={threadData.content} maxChars={600} />
       </article>
 
       {/* Replies */}
-      <section className="mt-8">
+      <section className="mt-6 sm:mt-8">
+        {/* Header */}
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Replies</h2>
+          <h2 className="text-base font-semibold sm:text-lg">Replies</h2>
 
-          {/* Sort */}
-          <div className="flex gap-1 rounded-md border p-1 text-sm">
+          <div className="flex gap-1 rounded-md border p-1 text-xs sm:text-sm">
             <button
               onClick={() => setSort("top")}
               className={`rounded px-3 py-1 ${
@@ -104,7 +105,8 @@ export default function ThreadPage({ params }) {
           </div>
         </div>
 
-        <div className="mt-6 rounded-lg border p-4">
+        {/* Reply composer */}
+        <div className="mb-6 rounded-lg border bg-card p-3 sm:p-4">
           <SignedIn>
             <textarea
               className="w-full rounded-md border bg-background p-3 text-sm"
@@ -112,7 +114,7 @@ export default function ThreadPage({ params }) {
               placeholder="Write your reply..."
             />
             <div className="mt-2 flex justify-end">
-              <button className="rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground">
+              <button className="w-full rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground sm:w-auto">
                 Post Reply
               </button>
             </div>
@@ -127,6 +129,7 @@ export default function ThreadPage({ params }) {
           </SignedOut>
         </div>
 
+        {/* Replies list */}
         {sortedReplies.length > 0 ? (
           <ReplyList replies={sortedReplies} />
         ) : (

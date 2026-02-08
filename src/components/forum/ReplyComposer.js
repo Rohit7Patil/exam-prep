@@ -28,7 +28,7 @@ export default function ReplyComposer({ onSubmit }) {
       <div className="mt-3 flex justify-end">
         <button
           onClick={handleSubmit}
-          className="rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground"
+          className="w-full sm:w-auto rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground"
         >
           Post reply
         </button>

@@ -1,45 +1,53 @@
 export default function FeatureSection() {
   const features = [
     {
+      title: "Tag-based Discussions",
+      description:
+        "Organize conversations using clean, structured tags instead of messy categories.",
+    },
+    {
+      title: "Voting & Replies",
+      description:
+        "Upvote helpful answers, reply to discussions, and surface the best content.",
+    },
+    {
+      title: "Nested Conversations",
+      description:
+        "Reply to replies like Reddit or Stack Overflow for deeper discussions.",
+    },
+    {
       title: "Smart Search",
-      description: "Find questions by topic, subject, or difficulty.",
+      description: "Quickly find relevant threads using keywords and tags.",
     },
-    {
-      title: "Discussion Forum",
-      description: "Discuss problems and strategies with aspirants.",
-    },
-    {
-      title: "Save & Review",
-      description: "Bookmark important questions for revision.",
-    },
-    {
-      title: "Previous Year Papers",
-      description: "Understand exam trends with PYQs.",
-    },
-  ]
+  ];
 
   return (
-    <section className="py-20">
-      <div className="container mx-auto px-6">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4">Why ExamPrep India?</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            Everything you need to crack competitive exams — one platform.
+    <section className="py-16 sm:py-20">
+      <div className="mx-auto max-w-6xl px-4">
+        <div className="mb-10 text-center">
+          <h2 className="mb-3 text-2xl font-bold sm:text-3xl">
+            Built for Serious Aspirants
+          </h2>
+          <p className="mx-auto max-w-2xl text-sm text-muted-foreground sm:text-base">
+            ExamPrep India focuses on quality discussions and clarity — not
+            noise.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {features.map((f) => (
             <div
               key={f.title}
-              className="p-6 border rounded-lg text-center bg-card"
+              className="rounded-lg border bg-card p-5 text-center"
             >
-              <h3 className="font-semibold text-lg mb-2">{f.title}</h3>
+              <h3 className="mb-2 text-base font-semibold sm:text-lg">
+                {f.title}
+              </h3>
               <p className="text-sm text-muted-foreground">{f.description}</p>
             </div>
           ))}
         </div>
       </div>
     </section>
-  )
+  );
 }

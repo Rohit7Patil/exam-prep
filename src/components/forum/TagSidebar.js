@@ -5,7 +5,7 @@ import { Tag } from "lucide-react";
 
 export default function TagSidebar({ activeTag, onSelect }) {
   return (
-    <aside className="w-60 shrink-0 border-r pr-4">
+    <aside className="hidden lg:block w-60 shrink-0 border-r pr-4">
       <h3 className="mb-3 text-xs font-semibold uppercase text-muted-foreground">
         Tags
       </h3>
