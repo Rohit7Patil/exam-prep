@@ -1,5 +1,6 @@
 "use client";
 
+import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
 import { notFound } from "next/navigation";
 import { use, useState } from "react";
 import { THREADS } from "@/data/threads";
@@ -101,6 +102,29 @@ export default function ThreadPage({ params }) {
               New
             </button>
           </div>
+        </div>
+
+        <div className="mt-6 rounded-lg border p-4">
+          <SignedIn>
+            <textarea
+              className="w-full rounded-md border bg-background p-3 text-sm"
+              rows={4}
+              placeholder="Write your reply..."
+            />
+            <div className="mt-2 flex justify-end">
+              <button className="rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground">
+                Post Reply
+              </button>
+            </div>
+          </SignedIn>
+
+          <SignedOut>
+            <SignInButton mode="modal">
+              <button className="w-full rounded-md border px-4 py-3 text-sm text-muted-foreground hover:bg-muted">
+                Sign in to reply
+              </button>
+            </SignInButton>
+          </SignedOut>
         </div>
 
         {sortedReplies.length > 0 ? (

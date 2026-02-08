@@ -1,6 +1,7 @@
 "use client";
 
-import { ChevronUp, ChevronDown } from "lucide-react";
+import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
 
 export default function VoteButtons({
@@ -10,61 +11,65 @@ export default function VoteButtons({
   const [userVote, setUserVote] = useState(initialUserVote);
   const [score, setScore] = useState(votes);
 
-  function handleUpvote() {
-    if (userVote === 1) {
-      // cancel upvote
+  function handleVote(value) {
+    if (userVote === value) {
       setUserVote(0);
-      setScore((v) => v - 1);
-    } else if (userVote === -1) {
-      // switch from downvote to upvote
-      setUserVote(1);
-      setScore((v) => v + 2);
+      setScore((prev) => prev - value);
     } else {
-      // fresh upvote
-      setUserVote(1);
-      setScore((v) => v + 1);
-    }
-  }
-
-  function handleDownvote() {
-    if (userVote === -1) {
-      // cancel downvote
-      setUserVote(0);
-      setScore((v) => v + 1);
-    } else if (userVote === 1) {
-      // switch from upvote to downvote
-      setUserVote(-1);
-      setScore((v) => v - 2);
-    } else {
-      // fresh downvote
-      setUserVote(-1);
-      setScore((v) => v - 1);
+      setScore((prev) => prev - userVote + value);
+      setUserVote(value);
     }
   }
 
   return (
     <div className="flex flex-col items-center gap-1 text-muted-foreground">
-      <button
-        onClick={handleUpvote}
-        className={`rounded p-1 transition ${
-          userVote === 1 ? "text-primary" : "hover:text-foreground"
-        }`}
-        aria-label="Upvote"
-      >
-        <ChevronUp className="h-5 w-5" />
-      </button>
+      {/* AUTHENTICATED */}
+      <SignedIn>
+        <button
+          onClick={() => handleVote(1)}
+          className={`rounded p-1 transition ${
+            userVote === 1 ? "text-primary" : "hover:text-foreground"
+          }`}
+          aria-label="Upvote"
+        >
+          <ChevronUp className="h-5 w-5" />
+        </button>
 
-      <span className="text-sm font-medium text-foreground">{score}</span>
+        <span className="text-sm font-medium text-foreground">{score}</span>
 
-      <button
-        onClick={handleDownvote}
-        className={`rounded p-1 transition ${
-          userVote === -1 ? "text-destructive" : "hover:text-foreground"
-        }`}
-        aria-label="Downvote"
-      >
-        <ChevronDown className="h-5 w-5" />
-      </button>
+        <button
+          onClick={() => handleVote(-1)}
+          className={`rounded p-1 transition ${
+            userVote === -1 ? "text-destructive" : "hover:text-foreground"
+          }`}
+          aria-label="Downvote"
+        >
+          <ChevronDown className="h-5 w-5" />
+        </button>
+      </SignedIn>
+
+      {/* NOT AUTHENTICATED */}
+      <SignedOut>
+        <SignInButton mode="modal">
+          <button
+            className="rounded p-1 hover:text-foreground"
+            aria-label="Sign in to upvote"
+          >
+            <ChevronUp className="h-5 w-5" />
+          </button>
+        </SignInButton>
+
+        <span className="text-sm font-medium text-foreground">{score}</span>
+
+        <SignInButton mode="modal">
+          <button
+            className="rounded p-1 hover:text-foreground"
+            aria-label="Sign in to downvote"
+          >
+            <ChevronDown className="h-5 w-5" />
+          </button>
+        </SignInButton>
+      </SignedOut>
     </div>
   );
 }

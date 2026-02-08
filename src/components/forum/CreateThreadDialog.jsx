@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { TAGS as INITIAL_TAGS } from "@/data/tags";
+import { SignedOut, SignedIn, SignInButton } from "@clerk/nextjs";
+import { useState } from "react";
 import CreateTagDialog from "./CreateTagDialog";
 
 export default function CreateThreadDialog() {
@@ -34,7 +35,15 @@ export default function CreateThreadDialog() {
 
   return (
     <>
-      <Button onClick={() => setOpen(true)}>+ Create Thread</Button>
+      <SignedOut>
+        <SignInButton mode="modal">
+          <Button>Create Thread</Button>
+        </SignInButton>
+      </SignedOut>
+
+      <SignedIn>
+        <Button onClick={() => setOpen(true)}>Create Thread</Button>
+      </SignedIn>
 
       {open && (
         <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/40">
@@ -65,7 +74,7 @@ export default function CreateThreadDialog() {
                     className="text-sm text-primary hover:underline"
                     onClick={() => setShowCreateTag(true)}
                   >
-                    + Create tag
+                    Create tag
                   </button>
                 </div>
 

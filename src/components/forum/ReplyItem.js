@@ -1,9 +1,10 @@
 "use client";
 
-import VoteButtons from "./VoteButtons";
-import { MessageSquare, User, Pin } from "lucide-react";
+import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
+import { MessageSquare, Pin, User } from "lucide-react";
 import { useState } from "react";
 import ReadMore from "../common/ReadMore";
+import VoteButtons from "./VoteButtons";
 
 export default function ReplyItem({ reply, depth = 0 }) {
   const [showReplyBox, setShowReplyBox] = useState(false);
@@ -47,13 +48,31 @@ export default function ReplyItem({ reply, depth = 0 }) {
 
           {/* Actions */}
           <div className="mt-2 flex items-center gap-4 text-sm text-muted-foreground">
-            <button
+            {/* <button
               onClick={() => setShowReplyBox((v) => !v)}
               className="flex items-center gap-1 hover:text-foreground"
             >
               <MessageSquare className="h-4 w-4" />
               Reply
-            </button>
+            </button> */}
+            <SignedIn>
+              <button
+                onClick={() => setShowReplyBox((v) => !v)}
+                className="flex items-center gap-1 hover:text-foreground"
+              >
+                <MessageSquare className="h-4 w-4" />
+                Reply
+              </button>
+            </SignedIn>
+
+            <SignedOut>
+              <SignInButton mode="modal">
+                <button className="flex items-center gap-1 hover:text-foreground">
+                  <MessageSquare className="h-4 w-4" />
+                  Reply
+                </button>
+              </SignInButton>
+            </SignedOut>
           </div>
 
           {/* Reply box */}

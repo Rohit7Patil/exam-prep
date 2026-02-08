@@ -2,8 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, MessageSquare } from "lucide-react";
+import { ArrowRight, BookOpen, MessageSquare } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  SignUpButton,
+  UserButton,
+} from "@clerk/nextjs";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -46,19 +53,30 @@ export default function Navbar() {
 
         {/* Right: Auth + Theme */}
         <div className="flex items-center gap-4">
-          <Link
-            href="/login"
-            className="text-sm text-muted-foreground hover:text-foreground"
-          >
-            Sign In
-          </Link>
+          <SignedOut>
+            <SignInButton mode="modal">
+              <button className="flex items-center gap-2 rounded-md border px-3 py-1.5 text-sm hover:bg-muted">
+                Sign In
+              </button>
+            </SignInButton>
 
-          <Link
-            href="/register"
-            className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition"
-          >
-            Sign Up
-          </Link>
+            <SignUpButton mode="modal">
+              <button className="flex items-center gap-2 rounded-md bg-primary px-3 py-1.5 text-sm text-primary-foreground">
+                Sign Up
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            </SignUpButton>
+          </SignedOut>
+
+          <SignedIn>
+            <UserButton
+              appearance={{
+                elements: {
+                  avatarBox: "h-8 w-8",
+                },
+              }}
+            />
+          </SignedIn>
 
           <ThemeToggle />
         </div>
