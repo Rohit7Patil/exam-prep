@@ -7,17 +7,53 @@ import { useState } from "react";
 export default function VoteButtons({
   votes = 0,
   initialUserVote = 0, // -1 | 0 | 1
+  targetType, // "thread" | "reply"
+  targetId,
+  disabled = false,
 }) {
   const [userVote, setUserVote] = useState(initialUserVote);
   const [score, setScore] = useState(votes);
 
-  function handleVote(value) {
+  async function handleVote(value) {
+    if (disabled) return;
+    // Optimistic update
+    const prevVote = userVote;
+    const prevScore = score;
+
     if (userVote === value) {
       setUserVote(0);
       setScore((prev) => prev - value);
     } else {
       setScore((prev) => prev - userVote + value);
       setUserVote(value);
+    }
+
+    // Determine API endpoint
+    const url =
+      targetType === "thread"
+        ? `/api/threads/${targetId}/vote`
+        : `/api/replies/${targetId}/vote`;
+
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ value }),
+      });
+
+      if (!res.ok) {
+        // Revert on failure
+        setUserVote(prevVote);
+        setScore(prevScore);
+      } else {
+        const data = await res.json();
+        setScore(data.votesCount);
+        setUserVote(data.userVote);
+      }
+    } catch {
+      // Revert on error
+      setUserVote(prevVote);
+      setScore(prevScore);
     }
   }
 

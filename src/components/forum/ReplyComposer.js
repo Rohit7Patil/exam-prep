@@ -12,7 +12,7 @@ export default function ReplyComposer({ onSubmit }) {
   }
 
   return (
-    <div className="mt-6 rounded-lg border bg-card p-4">
+    <div className="mt-6 rounded-lg border border-border/40 bg-card p-4">
       <h3 className="mb-2 text-sm font-semibold">
         Add a reply
       </h3>
@@ -21,7 +21,7 @@ export default function ReplyComposer({ onSubmit }) {
         value={text}
         onChange={(e) => setText(e.target.value)}
         rows={4}
-        className="w-full rounded-md border bg-background p-3"
+        className="w-full rounded-md border border-border/50 bg-background p-3 focus:outline-none focus:ring-1 focus:ring-primary/50"
         placeholder="Write your reply…"
       />
 

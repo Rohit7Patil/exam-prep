@@ -16,7 +16,7 @@ export default function Navbar() {
   const pathname = usePathname();
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b bg-background">
+    <nav className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="mx-auto flex h-14 sm:h-16 max-w-7xl items-center justify-between px-3 sm:px-6">
         {/* Left: Logo */}
         <Link href="/" className="flex items-center gap-2 font-semibold">
@@ -55,7 +55,7 @@ export default function Navbar() {
         <div className="flex items-center gap-2 sm:gap-4">
           <SignedOut>
             <SignInButton mode="modal">
-              <button className="rounded-md border px-2.5 py-1.5 text-xs sm:px-3 sm:text-sm hover:bg-muted">
+              <button className="rounded-md border border-border/50 px-2.5 py-1.5 text-xs sm:px-3 sm:text-sm hover:bg-muted/50 transition">
                 Sign In
               </button>
             </SignInButton>

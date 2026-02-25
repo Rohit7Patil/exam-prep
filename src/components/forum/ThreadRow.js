@@ -5,7 +5,7 @@ export default function ThreadRow({ thread }) {
   return (
     <Link
       href={`/forum/${thread.id}`}
-      className="block rounded-lg border bg-card p-4 transition hover:shadow-sm"
+      className="block rounded-lg border border-border/40 bg-card p-4 transition hover:border-border/80 hover:shadow-sm"
     >
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
         <div className="space-y-2">
@@ -15,14 +15,14 @@ export default function ThreadRow({ thread }) {
           </div>
 
           <p className="text-sm text-muted-foreground line-clamp-2">
-            {thread.excerpt}
+            {thread.content}
           </p>
 
           <div className="flex flex-wrap gap-2">
             {thread.tags.map((tag) => (
               <span
                 key={tag}
-                className="inline-flex items-center gap-1 rounded-md bg-muted px-2 py-0.5 text-xs"
+                className="inline-flex items-center gap-1 rounded-md bg-muted/50 border border-border/30 px-2 py-0.5 text-xs text-muted-foreground"
               >
                 <Tag className="h-3 w-3" />
                 {tag}
@@ -40,7 +40,7 @@ export default function ThreadRow({ thread }) {
             <Eye className="h-3 w-3" />
             {thread.viewsCount}
           </span>
-          <span>{thread.lastActive}</span>
+          <span>{thread.updatedAt ? new Date(thread.updatedAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" }) : ""}</span>
         </div>
       </div>
     </Link>

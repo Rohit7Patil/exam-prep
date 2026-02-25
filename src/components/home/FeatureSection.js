@@ -38,7 +38,7 @@ export default function FeatureSection() {
           {features.map((f) => (
             <div
               key={f.title}
-              className="rounded-lg border bg-card p-5 text-center"
+              className="rounded-lg border border-border/40 bg-card/50 p-5 text-center transition hover:border-border/60 hover:shadow-sm"
             >
               <h3 className="mb-2 text-base font-semibold sm:text-lg">
                 {f.title}

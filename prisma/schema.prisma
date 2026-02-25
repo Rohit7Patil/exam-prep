@@ -1,0 +1,141 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ENUMS
+enum VoteTargetType {
+  THREAD
+  REPLY
+}
+
+// USERS & ROLES
+model User {
+  id           String   @id @default(uuid()) @db.Uuid
+  clerkUserId  String   @unique
+  username     String?
+  avatarUrl    String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  threads      Thread[]
+  replies      Reply[]
+  votes        Vote[]
+  userRoles    UserRole[]
+
+  @@map("users")
+}
+
+model Role {
+  id        String     @id @default(uuid()) @db.Uuid
+  name      String     @unique
+  createdAt DateTime   @default(now())
+
+  users     UserRole[]
+
+  @@map("roles")
+}
+
+model UserRole {
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId   String @db.Uuid
+
+  role     Role   @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  roleId   String @db.Uuid
+
+  @@id([userId, roleId])
+  @@map("user_roles")
+}
+
+// THREADS
+model Thread {
+  id           String   @id @default(uuid()) @db.Uuid
+  title        String
+  content      String
+  pinned       Boolean  @default(false)
+  viewsCount   Int      @default(0)
+  repliesCount Int      @default(0)
+  votesCount   Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  author       User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId     String   @db.Uuid
+
+  tags         ThreadTag[]
+  replies      Reply[]
+  votes        Vote[]
+
+  @@map("threads")
+}
+
+// TAGS
+model Tag {
+  id        String   @id @default(uuid()) @db.Uuid
+  slug      String   @unique
+  label     String
+  createdAt DateTime @default(now())
+
+  threads   ThreadTag[]
+
+  @@map("tags")
+}
+
+model ThreadTag {
+  thread   Thread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  threadId String @db.Uuid
+
+  tag      Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  tagId    String @db.Uuid
+
+  @@id([threadId, tagId])
+  @@map("thread_tags")
+}
+
+// REPLIES (Nested)
+model Reply {
+  id         String   @id @default(uuid()) @db.Uuid
+  content    String
+  pinned     Boolean  @default(false)
+  votesCount Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  thread     Thread   @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  threadId   String   @db.Uuid
+
+  parent     Reply?   @relation("ReplyToReply", fields: [parentId], references: [id], onDelete: Cascade)
+  parentId   String?  @db.Uuid
+  children   Reply[]  @relation("ReplyToReply")
+
+  author     User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId   String   @db.Uuid
+
+  votes      Vote[]
+
+  @@map("replies")
+}
+
+// VOTES
+model Vote {
+  id        String   @id @default(uuid()) @db.Uuid
+  value     Int
+  createdAt DateTime @default(now())
+
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String @db.Uuid
+
+  thread    Thread? @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  threadId  String? @db.Uuid
+
+  reply     Reply?  @relation(fields: [replyId], references: [id], onDelete: Cascade)
+  replyId   String? @db.Uuid
+
+  @@unique([userId, threadId])
+  @@unique([userId, replyId])
+  @@map("votes")
+}

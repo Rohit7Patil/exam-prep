@@ -11,7 +11,7 @@ export default function ForumSearch({ value, onChange }) {
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder="Search discussions, tags, or keywords…"
-        className="w-full rounded-md border bg-background py-2 pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+        className="w-full rounded-md border border-border/50 bg-background py-2 pl-10 pr-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50"
       />
     </div>
   );

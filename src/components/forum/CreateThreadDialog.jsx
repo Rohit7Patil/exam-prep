@@ -3,16 +3,16 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { TAGS as INITIAL_TAGS } from "@/data/tags";
 import { SignedOut, SignedIn, SignInButton } from "@clerk/nextjs";
 import { useState } from "react";
 import CreateTagDialog from "./CreateTagDialog";
 
-export default function CreateThreadDialog() {
+export default function CreateThreadDialog({ tags: initialTags = [] }) {
   const [open, setOpen] = useState(false);
   const [showCreateTag, setShowCreateTag] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
-  const [tags, setTags] = useState(INITIAL_TAGS);
+  const [tags, setTags] = useState(initialTags);
   const [selectedTags, setSelectedTags] = useState([]);
 
   const [title, setTitle] = useState("");
@@ -46,8 +46,8 @@ export default function CreateThreadDialog() {
       </SignedIn>
 
       {open && (
-        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/40">
-          <div className="w-full max-w-lg rounded-lg bg-background p-4 sm:p-6 shadow-lg">
+        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="w-full max-w-lg rounded-lg border border-border/40 bg-background p-4 sm:p-6 shadow-xl">
             <h2 className="text-lg font-semibold mb-4">Create new thread</h2>
 
             <div className="space-y-4">
@@ -84,13 +84,13 @@ export default function CreateThreadDialog() {
                       key={tag.id}
                       type="button"
                       onClick={() => toggleTag(tag.id)}
-                      className={`rounded-md border px-2 py-1 text-sm transition ${
+                      className={`rounded-md border border-border/40 px-2 py-1 text-sm transition ${
                         selectedTags.includes(tag.id)
-                          ? "bg-primary text-primary-foreground"
-                          : "hover:bg-muted"
+                          ? "bg-primary text-primary-foreground border-primary"
+                          : "hover:bg-muted/50 text-muted-foreground hover:text-foreground"
                       }`}
                     >
-                      {tag.label}
+                      {tag.slug}
                     </button>
                   ))}
                 </div>
@@ -102,14 +102,31 @@ export default function CreateThreadDialog() {
                 Cancel
               </Button>
               <Button
-                disabled={selectedTags.length === 0}
-                onClick={() => {
-                  console.log({
-                    title,
-                    content,
-                    tags: selectedTags,
-                  });
-                  setOpen(false);
+                disabled={selectedTags.length === 0 || submitting}
+                onClick={async () => {
+                  setSubmitting(true);
+                  try {
+                    const res = await fetch("/api/threads", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        title,
+                        content,
+                        tagIds: selectedTags,
+                      }),
+                    });
+                    if (res.ok) {
+                      setOpen(false);
+                      setTitle("");
+                      setContent("");
+                      setSelectedTags([]);
+                      window.location.reload();
+                    }
+                  } catch (err) {
+                    console.error("Failed to create thread:", err);
+                  } finally {
+                    setSubmitting(false);
+                  }
                 }}
               >
                 Post Thread

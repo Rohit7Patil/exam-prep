@@ -11,7 +11,7 @@ export default function ThreadCard({
   return (
     <Link
       href={`/forum/${category}/${slug}`}
-      className="block rounded-md border p-3 sm:p-4 transition hover:bg-muted/50"
+      className="block rounded-md border border-border/40 bg-card p-3 sm:p-4 transition hover:bg-muted/50 hover:border-border/60"
     >
       <h2 className="mb-1 text-base sm:text-lg font-semibold leading-snug">
         {title}

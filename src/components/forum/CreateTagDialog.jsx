@@ -19,7 +19,7 @@ export default function CreateTagDialog({ open, onClose, onCreate }) {
     return null;
   }
 
-  function handleCreate() {
+  async function handleCreate() {
     const trimmed = value.trim();
 
     const validationError = validate(trimmed);
@@ -28,19 +28,36 @@ export default function CreateTagDialog({ open, onClose, onCreate }) {
       return;
     }
 
-    onCreate({
-      id: trimmed,
-      label: trimmed.replace(/-/g, " "),
-    });
+    try {
+      const res = await fetch("/api/tags", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          slug: trimmed,
+          label: trimmed.replace(/-/g, " "),
+        }),
+      });
 
-    setValue("");
-    setError("");
-    onClose();
+      if (!res.ok) {
+        const data = await res.json();
+        setError(data.error || "Failed to create tag");
+        return;
+      }
+
+      const tag = await res.json();
+      onCreate(tag);
+
+      setValue("");
+      setError("");
+      onClose();
+    } catch (err) {
+      setError("Failed to create tag");
+    }
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="w-full max-w-sm rounded-lg bg-background p-6 shadow-lg">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+      <div className="w-full max-w-sm rounded-lg border border-border/40 bg-background p-6 shadow-xl">
         <h3 className="text-lg font-semibold mb-4">Create new tag</h3>
 
         <Input
