@@ -1,7 +1,14 @@
 import { prisma } from "@/lib/prisma";
 import ForumPageClient from "./ForumPageClient";
+import { currentUser } from "@clerk/nextjs/server";
+import { syncUser } from "@/lib/syncUser";
 
 export default async function ForumPage({ searchParams }) {
+  const clerkUser = await currentUser();
+  if (clerkUser) {
+    await syncUser(clerkUser);
+  }
+
   const params = await searchParams;
   const tag = params?.tag || null;
   const search = params?.search || null;
