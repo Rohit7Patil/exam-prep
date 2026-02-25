@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "prisma": {
-    "seed": "node prisma/seed.js"
+    "seed": "node prisma/seed.mjs"
   },
   "scripts": {
     "dev": "set NEXT_DISABLE_TURBOPACK=1 && next dev",
