@@ -2,9 +2,11 @@ import ReplyItem from "./ReplyItem";
 
 export default function ReplyList({ replies, userVotes = {} }) {
   return (
-    <div className="space-y-4">
+    <div className="divide-y divide-border/30">
       {replies.map((reply) => (
-        <ReplyItem key={reply.id} reply={reply} userVotes={userVotes} />
+        <div key={reply.id} className="py-3 first:pt-0">
+          <ReplyItem reply={reply} userVotes={userVotes} />
+        </div>
       ))}
     </div>
   );

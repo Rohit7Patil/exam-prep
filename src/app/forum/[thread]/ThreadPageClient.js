@@ -27,12 +27,13 @@ export default function ThreadPageClient({ thread, userVotes = {}, currentUserId
       const res = await fetch(`/api/threads/${thread.id}/replies?page=${pageNum}&limit=10&sort=${currentSort}`);
       if (res.ok) {
         const data = await res.json();
+        const sortByVotes = (arr) => [...(arr || [])].sort((a, b) => (b.votesCount ?? 0) - (a.votesCount ?? 0));
         const newReplies = data.replies.map(r => ({
           ...r,
-          replies: r.children ? r.children.map(c => ({
+          replies: sortByVotes(r.children).map(c => ({
             ...c,
-            replies: c.children || []
-          })) : []
+            replies: sortByVotes(c.children)
+          }))
         }));
         setReplies(prev => append ? [...prev, ...newReplies] : newReplies);
         setHasMore(newReplies.length === 10);

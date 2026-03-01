@@ -37,13 +37,13 @@ export async function GET(req, { params }) {
             select: { id: true, username: true, avatarUrl: true },
           },
           children: {
-            orderBy: { createdAt: "asc" },
+            orderBy: { votesCount: "desc" },
             include: {
               author: {
                 select: { id: true, username: true, avatarUrl: true },
               },
               children: {
-                orderBy: { createdAt: "asc" },
+                orderBy: { votesCount: "desc" },
                 include: {
                   author: {
                     select: { id: true, username: true, avatarUrl: true },
