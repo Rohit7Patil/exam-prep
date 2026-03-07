@@ -30,7 +30,7 @@ export default function ReplyTypeSelector({ value, onChange }) {
       </div>
       {value === "ANSWER" && (
         <span className="text-[10px] text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded">
-          Counts for ClarityScore™
+          Counts for ClarityScore
         </span>
       )}
     </div>

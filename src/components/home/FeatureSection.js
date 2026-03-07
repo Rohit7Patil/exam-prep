@@ -4,7 +4,7 @@ export default function FeatureSection() {
   const features = [
     {
       icon: Zap,
-      title: "ClarityScore™ Reputation",
+      title: "ClarityScore Reputation",
       description:
         "Earn reputation points based on the accuracy of your answers, peer upvotes, and consistency. Stand out as an expert.",
     },
@@ -23,7 +23,8 @@ export default function FeatureSection() {
     {
       icon: ShieldCheck,
       title: "Built for Aspirants",
-      description: "Smart search, nested replies, and chronological discussions. Everything you need to crack your exam.",
+      description:
+        "Smart search, nested replies, and chronological discussions. Everything you need to crack your exam.",
     },
   ];
 
@@ -39,7 +40,8 @@ export default function FeatureSection() {
             More Signal. Less Noise.
           </h2>
           <p className="mx-auto max-w-2xl text-base text-muted-foreground sm:text-lg">
-            ExamPrep India rewards accuracy and clarity. Our gamified reputation system ensures the best answers always rise to the top.
+            ExamPrep India rewards accuracy and clarity. Our gamified reputation
+            system ensures the best answers always rise to the top.
           </p>
         </div>
 

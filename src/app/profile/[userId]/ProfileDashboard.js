@@ -34,15 +34,29 @@ function ClarityRing({ score }) {
 
   const tier =
     score >= 800
-      ? { label: "Gold Scholar", color: "#f59e0b", glow: "shadow-yellow-500/40" }
+      ? {
+          label: "Gold Scholar",
+          color: "#f59e0b",
+          glow: "shadow-yellow-500/40",
+        }
       : score >= 600
-      ? { label: "Silver Analyst", color: "#94a3b8", glow: "shadow-slate-400/40" }
-      : score >= 300
-      ? { label: "Bronze Starter", color: "#d97706", glow: "shadow-amber-600/30" }
-      : { label: "Rising", color: "#3b82f6", glow: "shadow-blue-500/30" };
+        ? {
+            label: "Silver Analyst",
+            color: "#94a3b8",
+            glow: "shadow-slate-400/40",
+          }
+        : score >= 300
+          ? {
+              label: "Bronze Starter",
+              color: "#d97706",
+              glow: "shadow-amber-600/30",
+            }
+          : { label: "Rising", color: "#3b82f6", glow: "shadow-blue-500/30" };
 
   return (
-    <div className={`relative flex items-center justify-center rounded-full shadow-xl ${tier.glow}`}>
+    <div
+      className={`relative flex items-center justify-center rounded-full shadow-xl ${tier.glow}`}
+    >
       <svg width="130" height="130" className="-rotate-90">
         <circle
           cx="65"
@@ -67,11 +81,14 @@ function ClarityRing({ score }) {
       </svg>
       <div className="absolute flex flex-col items-center">
         <Zap className="h-4 w-4 mb-0.5" style={{ color: tier.color }} />
-        <span className="text-2xl font-black leading-none" style={{ color: tier.color }}>
+        <span
+          className="text-2xl font-black leading-none"
+          style={{ color: tier.color }}
+        >
           {Math.round(score)}
         </span>
         <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wide mt-0.5">
-          ClarityScore™
+          ClarityScore
         </span>
       </div>
     </div>
@@ -81,7 +98,9 @@ function ClarityRing({ score }) {
 function StatCard({ icon: Icon, label, value, sub, color = "text-primary" }) {
   return (
     <div className="rounded-xl border border-border/40 bg-card p-4 flex flex-col gap-1 hover:border-border/70 transition-colors">
-      <div className={`${color} flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide`}>
+      <div
+        className={`${color} flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide`}
+      >
         <Icon className="h-3.5 w-3.5" />
         {label}
       </div>
@@ -116,14 +135,22 @@ function AchievementGrid({ achievements }) {
           title={a.desc}
         >
           <span className="text-3xl">{a.emoji}</span>
-          <span className="text-xs font-semibold text-foreground leading-tight">{a.label}</span>
+          <span className="text-xs font-semibold text-foreground leading-tight">
+            {a.label}
+          </span>
           {a.earned && a.earnedAt && (
             <span className="text-[9px] text-muted-foreground">
-              {new Date(a.earnedAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+              {new Date(a.earnedAt).toLocaleDateString("en-IN", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+              })}
             </span>
           )}
           {!a.earned && (
-            <span className="text-[9px] text-muted-foreground italic">Locked</span>
+            <span className="text-[9px] text-muted-foreground italic">
+              Locked
+            </span>
           )}
         </div>
       ))}
@@ -138,7 +165,12 @@ function ReplyCard({ reply, type }) {
     DISPUTED: "text-amber-500 bg-amber-500/10 border-amber-500/30",
     PENDING: "text-muted-foreground bg-muted/40 border-border/30",
   };
-  const statusLabels = { CORRECT: "✓ Correct", INCORRECT: "✗ Incorrect", DISPUTED: "⚠ Disputed", PENDING: "⏳ Pending" };
+  const statusLabels = {
+    CORRECT: "✓ Correct",
+    INCORRECT: "✗ Incorrect",
+    DISPUTED: "⚠ Disputed",
+    PENDING: "⏳ Pending",
+  };
 
   return (
     <Link
@@ -150,7 +182,9 @@ function ReplyCard({ reply, type }) {
           {reply.thread?.title}
         </span>
         {type === "answer" && reply.verificationStatus && (
-          <span className={`text-[10px] font-semibold border rounded-full px-2 py-0.5 ${statusColors[reply.verificationStatus]}`}>
+          <span
+            className={`text-[10px] font-semibold border rounded-full px-2 py-0.5 ${statusColors[reply.verificationStatus]}`}
+          >
             {statusLabels[reply.verificationStatus]}
           </span>
         )}
@@ -158,11 +192,15 @@ function ReplyCard({ reply, type }) {
       <p className="text-sm text-foreground line-clamp-2">{reply.content}…</p>
       <div className="mt-1.5 flex items-center gap-3 text-[10px] text-muted-foreground">
         <span className="flex items-center gap-0.5">
-          <ThumbsUp className="h-3 w-3" /> {reply.votesCount >= 0 ? reply.votesCount : 0}
+          <ThumbsUp className="h-3 w-3" />{" "}
+          {reply.votesCount >= 0 ? reply.votesCount : 0}
         </span>
         <span className="flex items-center gap-0.5">
           <Clock className="h-3 w-3" />
-          {new Date(reply.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
+          {new Date(reply.createdAt).toLocaleDateString("en-IN", {
+            day: "numeric",
+            month: "short",
+          })}
         </span>
       </div>
     </Link>
@@ -218,7 +256,9 @@ export default function ProfileDashboard({ profile }) {
 
           {/* Info */}
           <div className="flex-1 text-center sm:text-left">
-            <h1 className="text-2xl font-black text-foreground">{profile.username}</h1>
+            <h1 className="text-2xl font-black text-foreground">
+              {profile.username}
+            </h1>
             <p className="flex items-center justify-center sm:justify-start gap-1 text-xs text-muted-foreground mt-1">
               <Calendar className="h-3.5 w-3.5" />
               Member since {joinDate}
@@ -252,7 +292,8 @@ export default function ProfileDashboard({ profile }) {
             <div className="flex justify-between text-xs text-muted-foreground">
               <span className="font-semibold">Answer Accuracy</span>
               <span className="font-bold text-foreground">
-                {Math.round(accuracyPct * 100)}% ({verifiedCorrect}/{verifiedTotal})
+                {Math.round(accuracyPct * 100)}% ({verifiedCorrect}/
+                {verifiedTotal})
               </span>
             </div>
             <MiniBar pct={accuracyPct} color="bg-emerald-500" />
@@ -316,18 +357,30 @@ export default function ProfileDashboard({ profile }) {
         <div className="grid grid-cols-3 gap-3">
           <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-3 text-center">
             <CheckCircle className="h-5 w-5 text-emerald-500 mx-auto mb-1" />
-            <p className="text-xl font-black text-emerald-600 dark:text-emerald-400">{stats.verifiedCorrect}</p>
-            <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Correct</p>
+            <p className="text-xl font-black text-emerald-600 dark:text-emerald-400">
+              {stats.verifiedCorrect}
+            </p>
+            <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">
+              Correct
+            </p>
           </div>
           <div className="rounded-xl border border-red-500/20 bg-red-500/5 p-3 text-center">
             <XCircle className="h-5 w-5 text-red-500 mx-auto mb-1" />
-            <p className="text-xl font-black text-red-600 dark:text-red-400">{stats.verifiedIncorrect}</p>
-            <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Incorrect</p>
+            <p className="text-xl font-black text-red-600 dark:text-red-400">
+              {stats.verifiedIncorrect}
+            </p>
+            <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">
+              Incorrect
+            </p>
           </div>
           <div className="rounded-xl border border-muted/40 bg-muted/20 p-3 text-center">
             <Trophy className="h-5 w-5 text-amber-500 mx-auto mb-1" />
-            <p className="text-xl font-black text-foreground">{stats.pendingAnswers}</p>
-            <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Pending</p>
+            <p className="text-xl font-black text-foreground">
+              {stats.pendingAnswers}
+            </p>
+            <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">
+              Pending
+            </p>
           </div>
         </div>
       )}
@@ -366,23 +419,34 @@ export default function ProfileDashboard({ profile }) {
         {loadingStats ? (
           <div className="space-y-2">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-16 rounded-xl bg-muted/30 animate-pulse" />
+              <div
+                key={i}
+                className="h-16 rounded-xl bg-muted/30 animate-pulse"
+              />
             ))}
           </div>
         ) : (
           <div className="space-y-2">
             {activeTab === "answers" &&
               (stats?.answers?.length > 0 ? (
-                stats.answers.map((r) => <ReplyCard key={r.id} reply={r} type="answer" />)
+                stats.answers.map((r) => (
+                  <ReplyCard key={r.id} reply={r} type="answer" />
+                ))
               ) : (
-                <p className="text-sm text-muted-foreground py-4 text-center">No answers in this period.</p>
+                <p className="text-sm text-muted-foreground py-4 text-center">
+                  No answers in this period.
+                </p>
               ))}
 
             {activeTab === "discussions" &&
               (stats?.discussions?.length > 0 ? (
-                stats.discussions.map((r) => <ReplyCard key={r.id} reply={r} type="discussion" />)
+                stats.discussions.map((r) => (
+                  <ReplyCard key={r.id} reply={r} type="discussion" />
+                ))
               ) : (
-                <p className="text-sm text-muted-foreground py-4 text-center">No discussions in this period.</p>
+                <p className="text-sm text-muted-foreground py-4 text-center">
+                  No discussions in this period.
+                </p>
               ))}
 
             {activeTab === "threads" &&
@@ -393,15 +457,25 @@ export default function ProfileDashboard({ profile }) {
                     href={`/forum/${t.id}`}
                     className="block rounded-lg border border-border/30 bg-card/50 p-3 hover:border-border/70 transition-colors"
                   >
-                    <p className="text-sm font-medium text-foreground">{t.title}</p>
+                    <p className="text-sm font-medium text-foreground">
+                      {t.title}
+                    </p>
                     <div className="mt-1 flex items-center gap-3 text-[10px] text-muted-foreground">
-                      <span><MessageSquare className="inline h-3 w-3 mr-0.5" />{t.repliesCount} replies</span>
-                      <span><ThumbsUp className="inline h-3 w-3 mr-0.5" />{t.votesCount} votes</span>
+                      <span>
+                        <MessageSquare className="inline h-3 w-3 mr-0.5" />
+                        {t.repliesCount} replies
+                      </span>
+                      <span>
+                        <ThumbsUp className="inline h-3 w-3 mr-0.5" />
+                        {t.votesCount} votes
+                      </span>
                     </div>
                   </Link>
                 ))
               ) : (
-                <p className="text-sm text-muted-foreground py-4 text-center">No threads in this period.</p>
+                <p className="text-sm text-muted-foreground py-4 text-center">
+                  No threads in this period.
+                </p>
               ))}
           </div>
         )}

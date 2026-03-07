@@ -84,11 +84,11 @@ export default async function LeaderboardPage() {
       <div className="mb-8 text-center">
         <div className="inline-flex items-center justify-center gap-2 rounded-full bg-primary/10 border border-primary/20 px-4 py-1.5 text-sm font-semibold text-primary mb-3">
           <Trophy className="h-4 w-4" />
-          ClarityScore™ Leaderboard
+          ClarityScore Leaderboard
         </div>
         <h1 className="text-3xl font-black text-foreground">Top Scholars</h1>
         <p className="mt-1 text-sm text-muted-foreground max-w-md mx-auto">
-          Ranked by ClarityScore™ — our proprietary metric measuring answer
+          Ranked by ClarityScore — our proprietary metric measuring answer
           accuracy, peer signals, and consistency.
         </p>
       </div>
@@ -264,7 +264,7 @@ export default async function LeaderboardPage() {
                     className="px-4 py-12 text-center text-sm text-muted-foreground"
                   >
                     No users on the leaderboard yet. Start answering questions
-                    to earn your ClarityScore™!
+                    to earn your ClarityScore!
                   </td>
                 </tr>
               )}
@@ -273,11 +273,11 @@ export default async function LeaderboardPage() {
         </div>
       </div>
 
-      {/* ClarityScore™ explainer */}
+      {/* ClarityScore explainer */}
       <div className="mt-6 rounded-xl border border-border/30 bg-muted/20 p-4">
         <p className="text-xs text-muted-foreground">
           <span className="font-semibold text-foreground">
-            About ClarityScore™
+            About ClarityScore
           </span>{" "}
           — a composite metric unique to ExamPrep India. Formula:{" "}
           <code className="bg-muted rounded px-1">

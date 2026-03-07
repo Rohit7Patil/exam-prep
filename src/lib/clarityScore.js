@@ -12,21 +12,21 @@ const ACHIEVEMENTS = [
     slug: "bronze-starter",
     label: "Bronze Starter",
     emoji: "🥉",
-    desc: "ClarityScore™ reached 300",
+    desc: "ClarityScore reached 300",
     check: (stats) => stats.clarityScore >= 300,
   },
   {
     slug: "silver-analyst",
     label: "Silver Analyst",
     emoji: "🥈",
-    desc: "ClarityScore™ reached 600",
+    desc: "ClarityScore reached 600",
     check: (stats) => stats.clarityScore >= 600,
   },
   {
     slug: "gold-scholar",
     label: "Gold Scholar",
     emoji: "🏆",
-    desc: "ClarityScore™ reached 800",
+    desc: "ClarityScore reached 800",
     check: (stats) => stats.clarityScore >= 800,
   },
   {
@@ -62,7 +62,7 @@ const ACHIEVEMENTS = [
 export { ACHIEVEMENTS };
 
 /**
- * Recalculates and persists ClarityScore™ for a user.
+ * Recalculates and persists ClarityScore for a user.
  * ClarityScore = (AccuracyRate×0.5 + NormalizedVoteSignal×0.3 + ConsistencyRatio×0.2) × 1000
  */
 export async function calculateClarityScore(userId) {
@@ -139,7 +139,7 @@ export async function calculateClarityScore(userId) {
   }
   streak = currentStreak; // ongoing streak (resets on incorrect)
 
-  // --- ClarityScore™ formula ---
+  // --- ClarityScore formula ---
   // 1. Accuracy Rate (0–1)
   const accuracyRate = verifiedTotal > 0 ? verifiedCorrect / verifiedTotal : 0;
 

@@ -3,10 +3,30 @@
 import Link from "next/link";
 
 const SCORE_COLORS = [
-  { min: 800, color: "text-yellow-500", bg: "bg-yellow-500/10", border: "border-yellow-500/30" },
-  { min: 600, color: "text-slate-400", bg: "bg-slate-400/10", border: "border-slate-400/30" },
-  { min: 300, color: "text-amber-600", bg: "bg-amber-600/10", border: "border-amber-600/30" },
-  { min: 0,   color: "text-blue-500",  bg: "bg-blue-500/10",  border: "border-blue-500/30"  },
+  {
+    min: 800,
+    color: "text-yellow-500",
+    bg: "bg-yellow-500/10",
+    border: "border-yellow-500/30",
+  },
+  {
+    min: 600,
+    color: "text-slate-400",
+    bg: "bg-slate-400/10",
+    border: "border-slate-400/30",
+  },
+  {
+    min: 300,
+    color: "text-amber-600",
+    bg: "bg-amber-600/10",
+    border: "border-amber-600/30",
+  },
+  {
+    min: 0,
+    color: "text-blue-500",
+    bg: "bg-blue-500/10",
+    border: "border-blue-500/30",
+  },
 ];
 
 function getScoreStyle(score) {
@@ -61,7 +81,7 @@ export default function AuthorLink({ author, size = "sm" }) {
       {hasScore && (
         <span
           className={`inline-flex items-center gap-0.5 rounded-full border px-1.5 py-0 text-[10px] font-semibold leading-5 ${style.color} ${style.bg} ${style.border}`}
-          title={`ClarityScore™: ${score}`}
+          title={`ClarityScore: ${score}`}
         >
           ⚡{score}
         </span>
