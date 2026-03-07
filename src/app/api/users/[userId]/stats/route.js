@@ -23,74 +23,74 @@ export async function GET(req, { params }) {
 
   const dateFilter = since ? { createdAt: { gte: since } } : {};
 
-  const [answers, discussions, threads, replyVotes, threadVotes, recentActivity] =
-    await Promise.all([
-      prisma.reply.findMany({
-        where: { authorId: userId, replyType: "ANSWER", ...dateFilter },
-        select: {
-          id: true,
-          votesCount: true,
-          verificationStatus: true,
-          createdAt: true,
-          thread: { select: { title: true, id: true } },
-          content: true,
-        },
-        orderBy: { createdAt: "desc" },
-      }),
-      prisma.reply.findMany({
-        where: { authorId: userId, replyType: "DISCUSSION", ...dateFilter },
-        select: {
-          id: true,
-          votesCount: true,
-          createdAt: true,
-          thread: { select: { title: true, id: true } },
-          content: true,
-        },
-        orderBy: { createdAt: "desc" },
-      }),
-      prisma.thread.findMany({
-        where: { authorId: userId, ...(since ? { createdAt: { gte: since } } : {}) },
-        select: {
-          id: true,
-          title: true,
-          votesCount: true,
-          repliesCount: true,
-          viewsCount: true,
-          createdAt: true,
-        },
-        orderBy: { createdAt: "desc" },
-      }),
-      prisma.vote.findMany({
-        where: { reply: { authorId: userId }, ...dateFilter },
-        select: { value: true },
-      }),
-      prisma.vote.findMany({
-        where: { thread: { authorId: userId }, ...(since ? { createdAt: { gte: since } } : {}) },
-        select: { value: true },
-      }),
-      // Daily activity breakdown (last 30 points regardless of period)
-      prisma.reply.groupBy({
-        by: ["createdAt"],
-        where: {
-          authorId: userId,
-          createdAt: { gte: new Date(now - 30 * 24 * 60 * 60 * 1000) },
-        },
-        _count: { id: true },
-      }),
-    ]);
+  const answers = await prisma.reply.findMany({
+    where: { authorId: userId, replyType: "ANSWER", ...dateFilter },
+    select: {
+      id: true,
+      votesCount: true,
+      verificationStatus: true,
+      createdAt: true,
+      thread: { select: { title: true, id: true } },
+      content: true,
+    },
+    orderBy: { createdAt: "desc" },
+  });
 
-  const upvotes =
-    [...replyVotes, ...threadVotes].filter((v) => v.value > 0).length;
-  const downvotes =
-    [...replyVotes, ...threadVotes].filter((v) => v.value < 0).length;
+  const discussions = await prisma.reply.findMany({
+    where: { authorId: userId, replyType: "DISCUSSION", ...dateFilter },
+    select: {
+      id: true,
+      votesCount: true,
+      createdAt: true,
+      thread: { select: { title: true, id: true } },
+      content: true,
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  const threads = await prisma.thread.findMany({
+    where: {
+      authorId: userId,
+      ...(since ? { createdAt: { gte: since } } : {}),
+    },
+    select: {
+      id: true,
+      title: true,
+      votesCount: true,
+      repliesCount: true,
+      viewsCount: true,
+      createdAt: true,
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  const replyVotes = await prisma.vote.findMany({
+    where: { reply: { authorId: userId }, ...dateFilter },
+    select: { value: true },
+  });
+
+  const threadVotes = await prisma.vote.findMany({
+    where: {
+      thread: { authorId: userId },
+      ...(since ? { createdAt: { gte: since } } : {}),
+    },
+    select: { value: true },
+  });
+
+  const upvotes = [...replyVotes, ...threadVotes].filter(
+    (v) => v.value > 0,
+  ).length;
+  const downvotes = [...replyVotes, ...threadVotes].filter(
+    (v) => v.value < 0,
+  ).length;
   const verifiedCorrect = answers.filter(
-    (a) => a.verificationStatus === "CORRECT"
+    (a) => a.verificationStatus === "CORRECT",
   ).length;
   const verifiedIncorrect = answers.filter(
-    (a) => a.verificationStatus === "INCORRECT"
+    (a) => a.verificationStatus === "INCORRECT",
   ).length;
   const pendingAnswers = answers.filter(
-    (a) => a.verificationStatus === "PENDING"
+    (a) => a.verificationStatus === "PENDING",
   ).length;
 
   return Response.json({
