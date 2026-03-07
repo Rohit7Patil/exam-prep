@@ -27,21 +27,21 @@ export default async function ThreadPage({ params }) {
           orderBy: [{ pinned: "desc" }, { votesCount: "desc" }, { createdAt: "desc" }],
           include: {
             author: {
-              select: { id: true, username: true, avatarUrl: true },
+              select: { id: true, username: true, avatarUrl: true, stats: { select: { clarityScore: true } } },
             },
             votes: true,
             children: {
               orderBy: { createdAt: "asc" },
               include: {
                 author: {
-                  select: { id: true, username: true, avatarUrl: true },
+                  select: { id: true, username: true, avatarUrl: true, stats: { select: { clarityScore: true } } },
                 },
                 votes: true,
                 children: {
                   orderBy: { createdAt: "asc" },
                   include: {
                     author: {
-                      select: { id: true, username: true, avatarUrl: true },
+                      select: { id: true, username: true, avatarUrl: true, stats: { select: { clarityScore: true } } },
                     },
                     votes: true,
                   },
@@ -148,6 +148,9 @@ function serializeReplies(replies) {
     content: reply.content,
     pinned: reply.pinned,
     votesCount: reply.votesCount,
+    replyType: reply.replyType,
+    verificationStatus: reply.verificationStatus,
+    authorId: reply.authorId,
     createdAt: reply.createdAt.toISOString(),
     updatedAt: reply.updatedAt.toISOString(),
     author: reply.author,

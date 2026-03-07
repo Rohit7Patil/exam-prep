@@ -3,16 +3,26 @@
 import ReadMore from "@/components/common/ReadMore";
 import ReplyList from "@/components/forum/ReplyList";
 import VoteButtons from "@/components/forum/VoteButtons";
+import ReplyTypeSelector from "@/components/forum/ReplyTypeSelector";
+import AuthorLink from "@/components/forum/AuthorLink";
 import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
 import { Eye, MessageSquare, Pin, Tag } from "lucide-react";
 import { useState, useCallback, useEffect } from "react";
 import InfiniteScroll from "@/components/forum/InfiniteScroll";
 import { BackToTop, ScrollIndicator } from "@/components/forum/ScrollFeatures";
+import Link from "next/link";
 
-export default function ThreadPageClient({ thread, userVotes = {}, currentUserId, isAdmin }) {
+export default function ThreadPageClient({
+  thread,
+  userVotes = {},
+  currentUserId,
+  isAdmin,
+}) {
   const isAuthor = currentUserId && thread.author?.id === currentUserId;
   const [sort, setSort] = useState("top");
+  const [typeFilter, setTypeFilter] = useState("all"); // 'all' | 'ANSWER' | 'DISCUSSION'
   const [replyText, setReplyText] = useState("");
+  const [replyType, setReplyType] = useState("DISCUSSION");
   const [submitting, setSubmitting] = useState(false);
   const [replies, setReplies] = useState(thread.replies || []);
   const [page, setPage] = useState(1);
@@ -21,36 +31,43 @@ export default function ThreadPageClient({ thread, userVotes = {}, currentUserId
   const [pinned, setPinned] = useState(thread.pinned || false);
   const [pinning, setPinning] = useState(false);
 
-  const fetchReplies = useCallback(async (pageNum, currentSort, append = false) => {
-    setLoading(true);
-    try {
-      const res = await fetch(`/api/threads/${thread.id}/replies?page=${pageNum}&limit=10&sort=${currentSort}`);
-      if (res.ok) {
-        const data = await res.json();
-        const sortByVotes = (arr) => [...(arr || [])].sort((a, b) => (b.votesCount ?? 0) - (a.votesCount ?? 0));
-        const newReplies = data.replies.map(r => ({
-          ...r,
-          replies: sortByVotes(r.children).map(c => ({
-            ...c,
-            replies: sortByVotes(c.children)
-          }))
-        }));
-        setReplies(prev => append ? [...prev, ...newReplies] : newReplies);
-        setHasMore(newReplies.length === 10);
-        setPage(pageNum);
+  const fetchReplies = useCallback(
+    async (pageNum, currentSort, append = false) => {
+      setLoading(true);
+      try {
+        const res = await fetch(
+          `/api/threads/${thread.id}/replies?page=${pageNum}&limit=10&sort=${currentSort}`,
+        );
+        if (res.ok) {
+          const data = await res.json();
+          const sortByVotes = (arr) =>
+            [...(arr || [])].sort(
+              (a, b) => (b.votesCount ?? 0) - (a.votesCount ?? 0),
+            );
+          const newReplies = data.replies.map((r) => ({
+            ...r,
+            replies: sortByVotes(r.children).map((c) => ({
+              ...c,
+              replies: sortByVotes(c.children),
+            })),
+          }));
+          setReplies((prev) =>
+            append ? [...prev, ...newReplies] : newReplies,
+          );
+          setHasMore(newReplies.length === 10);
+          setPage(pageNum);
+        }
+      } catch (err) {
+        console.error("Failed to fetch replies:", err);
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      console.error("Failed to fetch replies:", err);
-    } finally {
-      setLoading(false);
-    }
-  }, [thread.id]);
+    },
+    [thread.id],
+  );
 
-  // Handle sort changes
   useEffect(() => {
-    // Skip initial fetch since we have initial replies
     if (page === 1 && sort === "top") return;
-    
     fetchReplies(1, sort);
   }, [sort, fetchReplies]);
 
@@ -84,8 +101,7 @@ export default function ThreadPageClient({ thread, userVotes = {}, currentUserId
   const sortedReplies = [...replies].sort((a, b) => {
     if (a.pinned && !b.pinned) return -1;
     if (!a.pinned && b.pinned) return 1;
-    if (sort === "new")
-      return new Date(b.createdAt) - new Date(a.createdAt);
+    if (sort === "new") return new Date(b.createdAt) - new Date(a.createdAt);
     return (b.votesCount ?? 0) - (a.votesCount ?? 0);
   });
 
@@ -96,7 +112,7 @@ export default function ThreadPageClient({ thread, userVotes = {}, currentUserId
       const res = await fetch(`/api/threads/${thread.id}/replies`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content: replyText }),
+        body: JSON.stringify({ content: replyText, replyType }),
       });
       if (res.ok) {
         const newReply = await res.json();
@@ -105,6 +121,7 @@ export default function ThreadPageClient({ thread, userVotes = {}, currentUserId
           { ...newReply, replies: [], votesCount: 0 },
         ]);
         setReplyText("");
+        setReplyType("DISCUSSION");
       }
     } catch (err) {
       console.error("Failed to post reply:", err);
@@ -132,9 +149,7 @@ export default function ThreadPageClient({ thread, userVotes = {}, currentUserId
 
         <div>
           <div className="flex items-start gap-2">
-            {pinned && (
-              <Pin className="mt-1 h-4 w-4 shrink-0 text-primary" />
-            )}
+            {pinned && <Pin className="mt-1 h-4 w-4 shrink-0 text-primary" />}
             <h1 className="text-xl font-bold leading-snug sm:text-2xl">
               {thread.title}
             </h1>
@@ -169,7 +184,10 @@ export default function ThreadPageClient({ thread, userVotes = {}, currentUserId
           </div>
 
           {/* Meta */}
-          <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground sm:text-sm">
+          <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+            <span className="flex items-center gap-1">
+              by <AuthorLink author={thread.author} size="sm" />
+            </span>
             <span className="flex items-center gap-1">
               <MessageSquare className="h-4 w-4" />
               {thread.repliesCount} replies
@@ -189,31 +207,77 @@ export default function ThreadPageClient({ thread, userVotes = {}, currentUserId
 
       {/* Replies */}
       <section className="mt-6 sm:mt-8">
-        {/* Header */}
-        <div className="mb-4 flex items-center justify-between">
+        {/* Header row */}
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
           <h2 className="text-base font-semibold sm:text-lg">Replies</h2>
 
-          <div className="flex gap-1 rounded-md border border-border/40 p-1 text-xs sm:text-sm">
-            <button
-              onClick={() => setSort("top")}
-              className={`rounded px-3 py-1 transition ${
-                sort === "top"
-                  ? "bg-muted font-medium text-foreground"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              Top
-            </button>
-            <button
-              onClick={() => setSort("new")}
-              className={`rounded px-3 py-1 transition ${
-                sort === "new"
-                  ? "bg-muted font-medium text-foreground"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              New
-            </button>
+          <div className="flex gap-2 flex-wrap">
+            {/* Type filter */}
+            <div className="flex gap-0.5 rounded-lg border border-border/40 p-0.5 text-xs">
+              {[
+                { key: "all", label: "All", count: sortedReplies.length },
+                {
+                  key: "ANSWER",
+                  label: "✅ Answers",
+                  count: sortedReplies.filter((r) => r.replyType === "ANSWER")
+                    .length,
+                },
+                {
+                  key: "DISCUSSION",
+                  label: "💬 Discussions",
+                  count: sortedReplies.filter(
+                    (r) => r.replyType === "DISCUSSION" || !r.replyType,
+                  ).length,
+                },
+              ].map(({ key, label, count }) => (
+                <button
+                  key={key}
+                  onClick={() => setTypeFilter(key)}
+                  className={`rounded-md px-2.5 py-1 font-medium transition flex items-center gap-1 ${
+                    typeFilter === key
+                      ? key === "ANSWER"
+                        ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400"
+                        : key === "DISCUSSION"
+                          ? "bg-blue-500/15 text-blue-700 dark:text-blue-400"
+                          : "bg-muted text-foreground"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {label}
+                  <span
+                    className={`rounded-full px-1.5 py-0 leading-4 text-[10px] font-bold ${
+                      typeFilter === key ? "bg-current/10" : "bg-muted"
+                    }`}
+                  >
+                    {count}
+                  </span>
+                </button>
+              ))}
+            </div>
+
+            {/* Sort toggle */}
+            <div className="flex gap-1 rounded-md border border-border/40 p-1 text-xs sm:text-sm">
+              <button
+                onClick={() => setSort("top")}
+                className={`rounded px-3 py-1 transition ${
+                  sort === "top"
+                    ? "bg-muted font-medium text-foreground"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                Top
+              </button>
+              <button
+                onClick={() => setSort("new")}
+                className={`rounded px-3 py-1 transition ${
+                  sort === "new"
+                    ? "bg-muted font-medium text-foreground"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                New
+              </button>
+            </div>
           </div>
         </div>
 
@@ -227,6 +291,7 @@ export default function ThreadPageClient({ thread, userVotes = {}, currentUserId
         ) : (
           <div className="mb-6 rounded-lg border border-border/40 bg-card p-3 sm:p-4">
             <SignedIn>
+              <ReplyTypeSelector value={replyType} onChange={setReplyType} />
               <textarea
                 className="w-full rounded-md border border-border/50 bg-background p-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50"
                 rows={4}
@@ -256,22 +321,56 @@ export default function ThreadPageClient({ thread, userVotes = {}, currentUserId
         )}
 
         {/* Replies list */}
-        {sortedReplies.length > 0 ? (
-          <div className="space-y-4">
-            <ReplyList replies={sortedReplies} userVotes={userVotes} />
-            <InfiniteScroll 
-              onLoadMore={loadMore} 
-              hasMore={hasMore} 
-              isLoading={loading} 
-            />
-          </div>
-        ) : (
-          !loading && (
-            <p className="text-sm text-muted-foreground">
-              No replies yet. Be the first to reply.
-            </p>
-          )
-        )}
+        {(() => {
+          const filtered =
+            typeFilter === "all"
+              ? sortedReplies
+              : typeFilter === "DISCUSSION"
+                ? sortedReplies.filter(
+                    (r) => r.replyType === "DISCUSSION" || !r.replyType,
+                  )
+                : sortedReplies.filter((r) => r.replyType === typeFilter);
+
+          if (filtered.length === 0 && !loading) {
+            return (
+              <div className="rounded-xl border border-border/30 bg-muted/20 py-10 text-center">
+                <p className="text-2xl mb-2">
+                  {typeFilter === "ANSWER"
+                    ? "✅"
+                    : typeFilter === "DISCUSSION"
+                      ? "💬"
+                      : "💭"}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  {typeFilter === "all"
+                    ? "No replies yet. Be the first to reply."
+                    : typeFilter === "ANSWER"
+                      ? "No answers yet — post the first verified answer!"
+                      : "No discussions yet."}
+                </p>
+              </div>
+            );
+          }
+
+          return (
+            <div className="space-y-4">
+              <ReplyList
+                replies={filtered}
+                userVotes={userVotes}
+                currentUserId={currentUserId}
+                isAdmin={isAdmin}
+                threadAuthorId={thread.author?.id}
+              />
+              {typeFilter === "all" && (
+                <InfiniteScroll
+                  onLoadMore={loadMore}
+                  hasMore={hasMore}
+                  isLoading={loading}
+                />
+              )}
+            </div>
+          );
+        })()}
       </section>
 
       <BackToTop />

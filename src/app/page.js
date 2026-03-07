@@ -1,5 +1,6 @@
 import HeroSection from "@/components/home/HeroSection";
 import FeatureSection from "@/components/home/FeatureSection";
+import HomeLeaderboard from "@/components/home/HomeLeaderboard";
 import { currentUser } from "@clerk/nextjs/server";
 import { syncUser } from "@/lib/syncUser";
 
@@ -12,6 +13,7 @@ export default async function HomePage() {
   return (
     <main>
       <HeroSection />
+      <HomeLeaderboard />
       <FeatureSection />
     </main>
   );

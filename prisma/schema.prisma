@@ -13,6 +13,18 @@ enum VoteTargetType {
   REPLY
 }
 
+enum ReplyType {
+  ANSWER
+  DISCUSSION
+}
+
+enum VerificationStatus {
+  PENDING
+  CORRECT
+  INCORRECT
+  DISPUTED
+}
+
 // USERS & ROLES
 model User {
   id           String   @id @default(uuid()) @db.Uuid
@@ -26,6 +38,9 @@ model User {
   replies      Reply[]
   votes        Vote[]
   userRoles    UserRole[]
+  stats        UserStats?
+  achievements Achievement[]
+  verificationsGiven Reply[] @relation("VerifiedBy")
 
   @@map("users")
 }
@@ -98,12 +113,15 @@ model ThreadTag {
 
 // REPLIES (Nested)
 model Reply {
-  id         String   @id @default(uuid()) @db.Uuid
-  content    String
-  pinned     Boolean  @default(false)
-  votesCount Int      @default(0)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id                 String             @id @default(uuid()) @db.Uuid
+  content            String
+  pinned             Boolean            @default(false)
+  votesCount         Int                @default(0)
+  replyType          ReplyType          @default(DISCUSSION)
+  verificationStatus VerificationStatus @default(PENDING)
+  verifiedAt         DateTime?
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
 
   thread     Thread   @relation(fields: [threadId], references: [id], onDelete: Cascade)
   threadId   String   @db.Uuid
@@ -114,6 +132,9 @@ model Reply {
 
   author     User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId   String   @db.Uuid
+
+  verifiedBy   User?   @relation("VerifiedBy", fields: [verifiedById], references: [id], onDelete: SetNull)
+  verifiedById String? @db.Uuid
 
   votes      Vote[]
 
@@ -138,4 +159,37 @@ model Vote {
   @@unique([userId, threadId])
   @@unique([userId, replyId])
   @@map("votes")
+}
+
+// USER STATS (ClarityScore™)
+model UserStats {
+  id               String   @id @default(uuid()) @db.Uuid
+  userId           String   @unique @db.Uuid
+  clarityScore     Float    @default(0)
+  totalAnswers     Int      @default(0)
+  verifiedCorrect  Int      @default(0)
+  verifiedIncorrect Int     @default(0)
+  totalDiscussions Int      @default(0)
+  totalThreads     Int      @default(0)
+  totalUpvotes     Int      @default(0)
+  totalDownvotes   Int      @default(0)
+  answerStreak     Int      @default(0)
+  updatedAt        DateTime @updatedAt
+
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_stats")
+}
+
+// ACHIEVEMENTS
+model Achievement {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid
+  slug      String
+  earnedAt  DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, slug])
+  @@map("achievements")
 }

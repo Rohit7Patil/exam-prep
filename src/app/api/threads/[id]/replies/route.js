@@ -34,19 +34,19 @@ export async function GET(req, { params }) {
         orderBy,
         include: {
           author: {
-            select: { id: true, username: true, avatarUrl: true },
+            select: { id: true, username: true, avatarUrl: true, stats: { select: { clarityScore: true } } },
           },
           children: {
             orderBy: { votesCount: "desc" },
             include: {
               author: {
-                select: { id: true, username: true, avatarUrl: true },
+                select: { id: true, username: true, avatarUrl: true, stats: { select: { clarityScore: true } } },
               },
               children: {
                 orderBy: { votesCount: "desc" },
                 include: {
                   author: {
-                    select: { id: true, username: true, avatarUrl: true },
+                    select: { id: true, username: true, avatarUrl: true, stats: { select: { clarityScore: true } } },
                   },
                 },
               },
@@ -88,11 +88,13 @@ export async function POST(req, { params }) {
   const { id } = await params;
 
   try {
-    const { content } = await req.json();
+    const { content, replyType } = await req.json();
 
     if (!content?.trim()) {
       return Response.json({ error: "Content is required" }, { status: 400 });
     }
+
+    const validType = ["ANSWER", "DISCUSSION"].includes(replyType) ? replyType : "DISCUSSION";
 
     // Verify thread exists
     const thread = await prisma.thread.findUnique({ where: { id } });
@@ -115,10 +117,11 @@ export async function POST(req, { params }) {
           content: content.trim(),
           threadId: id,
           authorId: user.id,
+          replyType: validType,
         },
         include: {
           author: {
-            select: { id: true, username: true, avatarUrl: true },
+            select: { id: true, username: true, avatarUrl: true, stats: { select: { clarityScore: true } } },
           },
         },
       }),

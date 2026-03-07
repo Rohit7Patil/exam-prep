@@ -8,7 +8,7 @@ import {
   SignUpButton,
   UserButton,
 } from "@clerk/nextjs";
-import { ArrowRight, BookOpen, MessageSquare } from "lucide-react";
+import { ArrowRight, BookOpen, MessageSquare, Trophy } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -48,6 +48,18 @@ export default function Navbar() {
           >
             <MessageSquare className="h-4 w-4" />
             Forum
+          </Link>
+
+          <Link
+            href="/leaderboard"
+            className={`flex items-center gap-1 transition ${
+              pathname.startsWith("/leaderboard")
+                ? "text-amber-500 font-medium"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <Trophy className="h-4 w-4" />
+            Leaderboard
           </Link>
         </div>
 
