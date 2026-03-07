@@ -4,6 +4,8 @@ import HomeLeaderboard from "@/components/home/HomeLeaderboard";
 import { currentUser } from "@clerk/nextjs/server";
 import { syncUser } from "@/lib/syncUser";
 
+export const revalidate = 60;
+
 export default async function HomePage() {
   const clerkUser = await currentUser();
   if (clerkUser) {
