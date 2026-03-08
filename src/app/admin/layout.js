@@ -25,16 +25,16 @@ export default async function AdminLayout({ children }) {
   if (!admin) redirect("/");
 
   return (
-    <div className="flex flex-col min-h-[calc(100vh-3.5rem)]">
-      {/* Mobile top bar — sits above the content row, sticky below the main navbar */}
+    <div className="flex flex-col h-screen overflow-hidden">
+      {/* Mobile top bar — sits above the content row, sticky below the main navbar (which is gone now) */}
       <AdminMobileBar />
 
       {/* Content row */}
-      <div className="flex flex-1">
+      <div className="flex flex-1 overflow-hidden">
         {/* Desktop sidebar */}
         <AdminSidebar />
         {/* Page content */}
-        <main className="flex-1 min-w-0 p-4 md:p-6 overflow-auto">
+        <main className="flex-1 min-w-0 p-4 md:p-6 overflow-y-auto">
           {children}
         </main>
       </div>

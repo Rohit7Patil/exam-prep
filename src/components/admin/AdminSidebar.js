@@ -30,8 +30,8 @@ export default function AdminSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden md:flex w-56 shrink-0 flex-col border-r border-border/50 min-h-full bg-muted/20">
-      <div className="flex items-center gap-2 px-5 py-5 border-b border-border/50">
+    <aside className="hidden md:flex w-56 shrink-0 flex-col border-r border-border/50 h-full overflow-y-auto bg-muted/20">
+      <div className="flex items-center gap-2 px-5 py-5 border-b border-border/50 shrink-0">
         <ShieldCheck className="h-5 w-5 text-blue-600 dark:text-blue-400" />
         <span className="font-semibold text-sm">Admin Panel</span>
       </div>
