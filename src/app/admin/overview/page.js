@@ -14,18 +14,18 @@ import {
 
 function StatCard({ icon: Icon, label, value, color }) {
   return (
-    <div className="rounded-xl border border-border/50 bg-card p-5 flex items-center gap-4">
-      <div className={`rounded-lg p-3 ${color}`}>
-        <Icon className="h-5 w-5 text-white" />
-      </div>
-      <div>
-        <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">
+    <div className="rounded-xl border border-border/50 bg-card p-4">
+      <div className="flex items-center justify-between mb-3">
+        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
           {label}
         </p>
-        <p className="text-2xl font-bold mt-0.5">
-          {value?.toLocaleString() ?? "—"}
-        </p>
+        <div className={`rounded-lg p-2 ${color}`}>
+          <Icon className="h-4 w-4 text-white" />
+        </div>
       </div>
+      <p className="text-2xl font-bold leading-none">
+        {value?.toLocaleString() ?? "—"}
+      </p>
     </div>
   );
 }
@@ -85,7 +85,7 @@ export default function OverviewPage() {
       </div>
 
       {/* Stat Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-3">
         <StatCard
           icon={Users}
           label="Users"

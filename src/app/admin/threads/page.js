@@ -88,6 +88,7 @@ export default function ThreadsPage() {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <input
+            suppressHydrationWarning
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             placeholder="Search threads…"
@@ -95,6 +96,7 @@ export default function ThreadsPage() {
           />
         </div>
         <button
+          suppressHydrationWarning
           type="submit"
           className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition"
         >
@@ -102,8 +104,80 @@ export default function ThreadsPage() {
         </button>
       </form>
 
-      {/* Threads Table */}
-      <div className="rounded-xl border border-border/50 overflow-hidden">
+      {/* Mobile card list */}
+      <div className="md:hidden space-y-2">
+        {loading && (
+          <p className="text-center text-muted-foreground py-10 text-sm">
+            Loading...
+          </p>
+        )}
+        {!loading && data?.threads?.length === 0 && (
+          <p className="text-center text-muted-foreground py-10 text-sm">
+            No threads found
+          </p>
+        )}
+        {!loading &&
+          data?.threads?.map((t) => (
+            <div
+              key={t.id}
+              className="rounded-xl border border-border/50 bg-card p-4 space-y-2"
+            >
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    {t.pinned && (
+                      <Pin className="h-3.5 w-3.5 text-blue-500 shrink-0" />
+                    )}
+                    <p className="font-medium text-sm leading-tight">
+                      {t.title}
+                    </p>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {t.author?.username || "Unknown"} · {timeAgo(t.createdAt)}
+                  </p>
+                </div>
+                <div className="flex gap-1.5 shrink-0">
+                  <button
+                    onClick={() => handlePin(t)}
+                    disabled={pinningId === t.id}
+                    title={t.pinned ? "Unpin" : "Pin"}
+                    className={`rounded-md p-1.5 text-xs transition disabled:opacity-50 ${t.pinned ? "bg-blue-500/10 text-blue-500" : "border border-border/50 text-muted-foreground"}`}
+                  >
+                    <Pin className="h-3.5 w-3.5" />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(t.id)}
+                    disabled={deletingId === t.id}
+                    className="rounded-md p-1.5 bg-red-500/10 text-red-500 transition disabled:opacity-50"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                <span className="flex items-center gap-1">
+                  <ThumbsUp className="h-3 w-3" />
+                  {t.votesCount}
+                </span>
+                <span className="flex items-center gap-1">
+                  <MessageSquare className="h-3 w-3" />
+                  {t.repliesCount}
+                </span>
+                {t.tags?.slice(0, 2).map((tag) => (
+                  <span
+                    key={tag.slug}
+                    className="rounded-full bg-muted px-2 py-0.5"
+                  >
+                    {tag.label}
+                  </span>
+                ))}
+              </div>
+            </div>
+          ))}
+      </div>
+
+      {/* Desktop table */}
+      <div className="hidden md:block rounded-xl border border-border/50 overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border/50 bg-muted/30">
@@ -113,13 +187,13 @@ export default function ThreadsPage() {
               <th className="text-left px-4 py-3 font-medium text-muted-foreground hidden lg:table-cell">
                 Tags
               </th>
-              <th className="text-right px-4 py-3 font-medium text-muted-foreground hidden md:table-cell">
+              <th className="text-right px-4 py-3 font-medium text-muted-foreground">
                 <ThumbsUp className="inline h-3.5 w-3.5" />
               </th>
-              <th className="text-right px-4 py-3 font-medium text-muted-foreground hidden md:table-cell">
+              <th className="text-right px-4 py-3 font-medium text-muted-foreground">
                 <MessageSquare className="inline h-3.5 w-3.5" />
               </th>
-              <th className="text-right px-4 py-3 font-medium text-muted-foreground hidden md:table-cell">
+              <th className="text-right px-4 py-3 font-medium text-muted-foreground">
                 Date
               </th>
               <th className="text-right px-4 py-3 font-medium text-muted-foreground">
@@ -179,13 +253,13 @@ export default function ThreadsPage() {
                       ))}
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-right text-muted-foreground hidden md:table-cell">
+                  <td className="px-4 py-3 text-right text-muted-foreground">
                     {t.votesCount}
                   </td>
-                  <td className="px-4 py-3 text-right text-muted-foreground hidden md:table-cell">
+                  <td className="px-4 py-3 text-right text-muted-foreground">
                     {t.repliesCount}
                   </td>
-                  <td className="px-4 py-3 text-right text-muted-foreground hidden md:table-cell text-xs">
+                  <td className="px-4 py-3 text-right text-muted-foreground text-xs">
                     {timeAgo(t.createdAt)}
                   </td>
                   <td className="px-4 py-3">
@@ -194,11 +268,7 @@ export default function ThreadsPage() {
                         onClick={() => handlePin(t)}
                         disabled={pinningId === t.id}
                         title={t.pinned ? "Unpin" : "Pin"}
-                        className={`rounded-md px-2.5 py-1 text-xs font-medium transition disabled:opacity-50 ${
-                          t.pinned
-                            ? "bg-blue-500/10 text-blue-500 hover:bg-blue-500/20"
-                            : "border border-border/50 text-muted-foreground hover:bg-muted/50"
-                        }`}
+                        className={`rounded-md px-2.5 py-1 text-xs font-medium transition disabled:opacity-50 ${t.pinned ? "bg-blue-500/10 text-blue-500 hover:bg-blue-500/20" : "border border-border/50 text-muted-foreground hover:bg-muted/50"}`}
                       >
                         <Pin className="h-3.5 w-3.5" />
                       </button>

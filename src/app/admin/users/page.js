@@ -41,8 +41,8 @@ function RoleModal({ user, onClose, onSaved }) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div className="w-full max-w-sm rounded-xl border border-border bg-card shadow-2xl p-6">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm">
+      <div className="w-full sm:max-w-sm rounded-t-2xl sm:rounded-xl border-t sm:border border-border bg-card shadow-2xl p-6">
         <div className="flex items-center gap-3 mb-5">
           {user.avatarUrl ? (
             <Image
@@ -175,15 +175,85 @@ export default function UsersPage() {
         </button>
       </form>
 
-      {/* Table */}
-      <div className="rounded-xl border border-border/50 overflow-hidden">
+      {/* Mobile card list (xs–sm) */}
+      <div className="md:hidden space-y-2">
+        {loading && (
+          <p className="text-center text-muted-foreground py-10 text-sm">
+            Loading...
+          </p>
+        )}
+        {!loading && data?.users?.length === 0 && (
+          <p className="text-center text-muted-foreground py-10 text-sm">
+            No users found
+          </p>
+        )}
+        {!loading &&
+          data?.users?.map((u) => (
+            <div
+              key={u.id}
+              className="rounded-xl border border-border/50 bg-card px-4 py-3 flex items-center justify-between gap-3"
+            >
+              <div className="flex items-center gap-2.5 min-w-0">
+                {u.avatarUrl ? (
+                  <Image
+                    src={u.avatarUrl}
+                    alt={u.username}
+                    width={32}
+                    height={32}
+                    className="rounded-full shrink-0"
+                  />
+                ) : (
+                  <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center shrink-0">
+                    <User className="h-4 w-4 text-muted-foreground" />
+                  </div>
+                )}
+                <div className="min-w-0">
+                  <p className="font-medium text-sm truncate">
+                    {u.username || "—"}
+                  </p>
+                  <div className="flex gap-1 flex-wrap mt-0.5">
+                    {u.roles.length === 0 ? (
+                      <span className="text-xs text-muted-foreground">
+                        Member
+                      </span>
+                    ) : (
+                      u.roles.map((r) => (
+                        <span
+                          key={r.id}
+                          className={`rounded-full px-1.5 py-0.5 text-xs font-medium ${
+                            r.name === "admin"
+                              ? "bg-blue-500/10 text-blue-500"
+                              : r.name === "moderator"
+                                ? "bg-violet-500/10 text-violet-500"
+                                : "bg-amber-500/10 text-amber-600"
+                          }`}
+                        >
+                          {r.name}
+                        </span>
+                      ))
+                    )}
+                  </div>
+                </div>
+              </div>
+              <button
+                onClick={() => setSelectedUser(u)}
+                className="rounded-md bg-primary/10 text-primary px-3 py-1.5 text-xs font-medium hover:bg-primary/20 transition shrink-0"
+              >
+                Roles
+              </button>
+            </div>
+          ))}
+      </div>
+
+      {/* Desktop table */}
+      <div className="hidden md:block rounded-xl border border-border/50 overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border/50 bg-muted/30">
               <th className="text-left px-5 py-3 font-medium text-muted-foreground">
                 User
               </th>
-              <th className="text-left px-4 py-3 font-medium text-muted-foreground hidden md:table-cell">
+              <th className="text-left px-4 py-3 font-medium text-muted-foreground">
                 Roles
               </th>
               <th className="text-right px-4 py-3 font-medium text-muted-foreground hidden lg:table-cell">
@@ -192,7 +262,7 @@ export default function UsersPage() {
               <th className="text-right px-4 py-3 font-medium text-muted-foreground hidden lg:table-cell">
                 Threads
               </th>
-              <th className="text-right px-4 py-3 font-medium text-muted-foreground hidden md:table-cell">
+              <th className="text-right px-4 py-3 font-medium text-muted-foreground">
                 Joined
               </th>
               <th className="text-right px-4 py-3 font-medium text-muted-foreground">
@@ -242,7 +312,7 @@ export default function UsersPage() {
                       <span className="font-medium">{u.username || "—"}</span>
                     </div>
                   </td>
-                  <td className="px-4 py-3 hidden md:table-cell">
+                  <td className="px-4 py-3">
                     <div className="flex gap-1 flex-wrap">
                       {u.roles.length === 0 && (
                         <span className="text-xs text-muted-foreground">
@@ -271,7 +341,7 @@ export default function UsersPage() {
                   <td className="px-4 py-3 text-right hidden lg:table-cell text-muted-foreground">
                     {u.stats?.totalThreads ?? 0}
                   </td>
-                  <td className="px-4 py-3 text-right hidden md:table-cell text-muted-foreground text-xs">
+                  <td className="px-4 py-3 text-right text-muted-foreground text-xs">
                     {timeAgo(u.createdAt)}
                   </td>
                   <td className="px-4 py-3 text-right">

@@ -115,7 +115,8 @@ export default function TagsPage() {
       </div>
 
       {/* Tags Table */}
-      <div className="rounded-xl border border-border/50 overflow-hidden">
+      {/* Tags Table */}
+      <div className="rounded-xl border border-border/50 overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border/50 bg-muted/30">
