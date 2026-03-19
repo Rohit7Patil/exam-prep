@@ -18,40 +18,18 @@ export default function HeroSection() {
           and learn together with serious aspirants.
         </p>
 
-        {/* Search */}
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (query.trim()) {
-              alert(`Search later: ${query}`);
-            }
-          }}
-          className="mx-auto mb-8 flex max-w-xl flex-col gap-2 sm:flex-row"
-        >
-          <input
-            className="flex-1 rounded-md border border-border/40 bg-background px-4 py-3 text-sm sm:text-base focus:outline-none focus:ring-1 focus:ring-primary/50"
-            placeholder="Search discussions, tags, or topics..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            suppressHydrationWarning
-          />
-          <button className="rounded-md bg-primary px-6 py-3 text-sm text-primary-foreground sm:text-base hover:bg-primary/90 transition">
-            Search
-          </button>
-        </form>
-
         {/* CTAs */}
-        <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <div className="flex flex-col items-center justify-center gap-4 sm:flex-row mt-4">
           <Link
             href="/forum"
-            className="w-full rounded-md bg-primary px-6 py-3 text-center text-sm text-primary-foreground sm:w-auto sm:text-base hover:bg-primary/90 transition"
+            className="w-full rounded-md bg-primary px-8 py-3.5 text-center text-sm font-bold text-primary-foreground sm:w-auto sm:text-base hover:bg-primary/90 transition shadow-lg shadow-primary/20"
           >
             Join the Forum
           </Link>
 
           <Link
             href="/questions"
-            className="w-full rounded-md border border-border/40 px-6 py-3 text-center text-sm sm:w-auto sm:text-base hover:bg-muted/50 transition"
+            className="w-full rounded-md border border-border/60 bg-background px-8 py-3.5 text-center text-sm font-bold sm:w-auto sm:text-base hover:bg-muted/50 transition shadow-sm"
           >
             Browse Questions
           </Link>

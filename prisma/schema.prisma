@@ -41,8 +41,36 @@ model User {
   stats        UserStats?
   achievements Achievement[]
   verificationsGiven Reply[] @relation("VerifiedBy")
+  blogs        Blog[]
 
   @@map("users")
+}
+
+model Blog {
+  id        String   @id @default(uuid()) @db.Uuid
+  title     String
+  slug      String   @unique
+  content   String   @db.Text
+  published Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId  String   @db.Uuid
+
+  @@map("blogs")
+}
+
+model ContactSubmission {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String
+  email     String
+  subject   String
+  message   String   @db.Text
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@map("contact_submissions")
 }
 
 model Role {

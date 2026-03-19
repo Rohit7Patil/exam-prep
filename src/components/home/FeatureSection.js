@@ -1,30 +1,30 @@
-import { Trophy, CheckCircle, Zap, ShieldCheck } from "lucide-react";
+import { Trophy, Zap, BookOpen, FileText } from "lucide-react";
 
 export default function FeatureSection() {
   const features = [
     {
-      icon: Zap,
-      title: "ClarityScore Reputation",
+      icon: BookOpen,
+      title: "Question Bank",
       description:
-        "Earn reputation points based on the accuracy of your answers, peer upvotes, and consistency. Stand out as an expert.",
+        "Access 10,000+ year-wise and subject-wise PYQs for UPSC and State PSC exams. High-quality explanations included.",
     },
     {
-      icon: CheckCircle,
+      icon: Zap,
       title: "Verified Answers",
       description:
-        "Thread authors and admins verify answers as Correct or Incorrect. No more sifting through noise to find the truth.",
+        "Get expert-verified answers to complex questions. Our community and admins ensure only the most accurate content survives.",
     },
     {
       icon: Trophy,
-      title: "Achievements & Medals",
+      title: "ClarityScore System",
       description:
-        "Unlock prestigious titles like Gold Scholar and Sharp Shot. Showcase your expertise directly on your profile.",
+        "A sophisticated reputation system that rewards accurate contributors and helps you find the most helpful members.",
     },
     {
-      icon: ShieldCheck,
-      title: "Built for Aspirants",
+      icon: FileText,
+      title: "Expert Blogs",
       description:
-        "Smart search, nested replies, and chronological discussions. Everything you need to crack your exam.",
+        "Stay updated with latest exam patterns, strategies, and notifications directly from verified educators and admins.",
     },
   ];
 

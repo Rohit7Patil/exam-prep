@@ -174,6 +174,8 @@ async function main() {
   await prisma.userRole.deleteMany({});
   await prisma.userStats.deleteMany({});
   await prisma.achievement.deleteMany({});
+  await prisma.blog.deleteMany({});
+  await prisma.contactSubmission.deleteMany({});
 
   // We don't necessarily need to wipe users, but wiping fake ones helps.
   await prisma.user.deleteMany({
@@ -317,6 +319,59 @@ async function main() {
   );
   for (const user of mockUsers) {
     await computeScore(user.id);
+  }
+
+  // 5. Create Blogs
+  console.log("Creating seed blogs...");
+  const blogData = [
+    {
+      title: "UPSC 2026: Expected Changes and Syllabus Updates",
+      slug: "upsc-2026-syllabus-updates",
+      content: "The Union Public Service Commission is expected to introduce several changes in the examination pattern for 2026. This blog post explores the potential updates in GS papers and optional subjects based on recent committee recommendations.\n\nKey areas of focus include digital forensics, data ethics, and climate change policy. Aspirants are advised to start incorporating these themes into their preparation early.",
+      published: true,
+      authorId: mockUsers[0].id,
+    },
+    {
+      title: "Mastering Answer Writing for GS Paper II",
+      slug: "mastering-gs-2-answer-writing",
+      content: "General Studies Paper II covers Polity, Governance, Social Justice, and International Relations. The secret to scoring 110+ lies in quoting relevant Articles of the Constitution, Supreme Court judgments, and Law Commission reports.\n\nAlways structure your answers with a crisp introduction, point-wise body, and a forward-looking conclusion.",
+      published: true,
+      authorId: mockUsers[1].id,
+    },
+    {
+      title: "Daily Current Affairs: Why 'The Hindu' remains the Gold Standard",
+      slug: "the-hindu-gold-standard-current-affairs",
+      content: "Every aspirant asks: Should I read The Hindu or Indian Express? While both are excellent, The Hindu's editorials provide a depth of analysis that is rarely matched. This post breaks down how to read the newspaper in 45 minutes and extract maximum value for both Prelims and Mains.",
+      published: false, // Draft
+      authorId: mockUsers[2].id,
+    },
+  ];
+
+  for (const b of blogData) {
+    await prisma.blog.create({ data: b });
+  }
+
+  // 6. Create Contact Submissions
+  console.log("Creating seed contact submissions...");
+  const contactData = [
+    {
+      name: "Rahul Sharma",
+      email: "rahul.sharma@example.com",
+      subject: "Query about ClarityScore",
+      message: "Hello team, I've been contributing to the forum for a week but my ClarityScore hasn't increased. Can you please check if there's an issue with my account? My username is Aspirant542.",
+      isRead: false,
+    },
+    {
+      name: "Sriya Mittal",
+      email: "sriya.m@test.com",
+      subject: "Report a Bug in Leaderboard",
+      message: "I noticed that the leaderboard table overlaps on mobile devices (iPhone 13). The points column is partially hidden. thought you'd want to know!",
+      isRead: true,
+    },
+  ];
+
+  for (const c of contactData) {
+    await prisma.contactSubmission.create({ data: c });
   }
 
   console.log("✅ Production seeding complete!");
