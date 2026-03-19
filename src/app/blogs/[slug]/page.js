@@ -4,6 +4,8 @@ import Link from "next/link";
 import { ArrowLeft, Calendar, User } from "lucide-react";
 import BlogShareButton from "@/components/BlogShareButton";
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   const blog = await prisma.blog.findUnique({ where: { slug } });
@@ -40,9 +42,9 @@ export default async function BlogDetailPage({ params }) {
             <div className="flex flex-wrap items-center gap-6 text-sm text-muted-foreground py-6 border-y border-border/50">
               <div className="flex items-center gap-2">
                 <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
-                  {blog.author.username?.[0]?.toUpperCase()}
+                  {blog.author?.username?.[0]?.toUpperCase() || "A"}
                 </div>
-                <span className="font-medium text-foreground">{blog.author.username}</span>
+                <span className="font-medium text-foreground">{blog.author?.username || "Admin"}</span>
               </div>
               <span className="flex items-center gap-1.5">
                 <Calendar className="h-4 w-4" />

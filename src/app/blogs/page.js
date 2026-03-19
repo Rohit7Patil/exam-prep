@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { Calendar, User, ArrowRight, FileText } from "lucide-react";
 
-export const revalidate = 60; // Revalidate every minute
+export const dynamic = "force-dynamic";
 
 export default async function BlogsPage() {
   const blogs = await prisma.blog.findMany({
@@ -46,7 +46,7 @@ export default async function BlogsPage() {
                     </span>
                     <span className="flex items-center gap-1">
                       <User className="h-3 w-3" />
-                      {blog.author.username}
+                      {blog.author?.username || "Admin"}
                     </span>
                   </div>
                   <h2 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors line-clamp-2">
