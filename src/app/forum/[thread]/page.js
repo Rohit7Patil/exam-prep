@@ -4,27 +4,30 @@ import { notFound } from "next/navigation";
 import ThreadPageClient from "./ThreadPageClient";
 
 export default async function ThreadPage({ params }) {
-  const { thread: threadId } = await params;
+  const { thread: threadParam } = await params;
+  const decodedParam = decodeURIComponent(threadParam);
+  const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(decodedParam);
 
-  // Increment view count and fetch thread
-  let thread;
-  try {
-    thread = await prisma.thread.update({
-      where: { id: threadId },
-      data: { viewsCount: { increment: 1 } },
+  const threadInclude = {
+    author: {
+      select: { id: true, username: true, avatarUrl: true },
+    },
+    tags: {
+      include: {
+        tag: { select: { id: true, slug: true, label: true } },
+      },
+    },
+    replies: {
+      where: { parentId: null },
+      take: 10,
+      orderBy: [{ pinned: "desc" }, { votesCount: "desc" }, { createdAt: "desc" }],
       include: {
         author: {
-          select: { id: true, username: true, avatarUrl: true },
+          select: { id: true, username: true, avatarUrl: true, stats: { select: { clarityScore: true } } },
         },
-        tags: {
-          include: {
-            tag: { select: { id: true, slug: true, label: true } },
-          },
-        },
-        replies: {
-          where: { parentId: null },
-          take: 10,
-          orderBy: [{ pinned: "desc" }, { votesCount: "desc" }, { createdAt: "desc" }],
+        votes: true,
+        children: {
+          orderBy: { createdAt: "asc" },
           include: {
             author: {
               select: { id: true, username: true, avatarUrl: true, stats: { select: { clarityScore: true } } },
@@ -37,26 +40,35 @@ export default async function ThreadPage({ params }) {
                   select: { id: true, username: true, avatarUrl: true, stats: { select: { clarityScore: true } } },
                 },
                 votes: true,
-                children: {
-                  orderBy: { createdAt: "asc" },
-                  include: {
-                    author: {
-                      select: { id: true, username: true, avatarUrl: true, stats: { select: { clarityScore: true } } },
-                    },
-                    votes: true,
-                  },
-                },
               },
             },
           },
         },
       },
+    },
+  };
+
+  // Try slug first, then fallback to ID
+  let thread = await prisma.thread.findUnique({
+    where: { slug: decodedParam },
+    include: threadInclude,
+  });
+
+  if (!thread && isUuid) {
+    thread = await prisma.thread.findUnique({
+      where: { id: decodedParam },
+      include: threadInclude,
     });
-  } catch {
-    notFound();
   }
 
   if (!thread) notFound();
+
+  // Increment view count (fire-and-forget)
+  prisma.thread.update({
+    where: { id: thread.id },
+    data: { viewsCount: { increment: 1 } },
+  }).catch(() => {});
+
 
   // Get current user's votes if authenticated
   let userVotes = {};
@@ -73,7 +85,7 @@ export default async function ThreadPage({ params }) {
         where: {
           userId: dbUser.id,
           OR: [
-            { threadId: threadId },
+            { threadId: thread.id },
             ...(allReplyIds.length > 0
               ? [{ replyId: { in: allReplyIds } }]
               : []),

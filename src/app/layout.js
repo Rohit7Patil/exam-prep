@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "next-themes";
+import StartupAuthModal from "@/components/common/StartupAuthModal";
 import "./globals.css";
 
 export default function RootLayout({ children }) {
@@ -14,6 +15,7 @@ export default function RootLayout({ children }) {
             enableSystem
             disableTransitionOnChange
           >
+            <StartupAuthModal />
             <Navbar />
             {children}
           </ThemeProvider>

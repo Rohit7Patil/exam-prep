@@ -3,6 +3,9 @@
 import { Search, BookOpen, FileText, Layout, Award, Filter, ArrowRight, GraduationCap, History, Globe, Shield, Microscope } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import dynamic from 'next/dynamic';
+
+const ThreeDElement = dynamic(() => import('../../components/ThreeDElement'), { ssr: false });
 
 const CATEGORIES = [
   {
@@ -61,7 +64,9 @@ export default function QuestionBankPage() {
       <section className="relative py-20 overflow-hidden border-b border-border/40 bg-muted/20">
         <div className="absolute inset-0 bg-grid-slate-900/[0.04] bg-[center_top_-1px] [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
         
-        <div className="container relative mx-auto px-6 max-w-6xl text-center">
+        <ThreeDElement />
+
+        <div className="container relative mx-auto px-6 max-w-6xl text-center z-10">
           <div className="inline-flex items-center gap-2 rounded-full bg-blue-500/10 px-4 py-1.5 text-sm font-medium text-blue-600 mb-6">
             <BookOpen className="h-4 w-4" />
             <span>Over 10,000+ Previous Year Questions</span>

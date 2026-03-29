@@ -8,15 +8,16 @@ import {
   SignUpButton,
   UserButton,
 } from "@clerk/nextjs";
-import { 
-  ArrowRight, 
-  BookOpen, 
-  MessageSquare, 
-  Trophy, 
-  FileText, 
-  Menu, 
-  X, 
-  ShieldCheck 
+import {
+  ArrowRight,
+  BookOpen,
+  MessagesSquare,
+  MessageSquare,
+  Trophy,
+  FileText,
+  Menu,
+  X,
+  ShieldCheck,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -30,8 +31,13 @@ export default function Navbar() {
 
   const navLinks = [
     { href: "/questions", label: "Question Bank", icon: BookOpen },
-    { href: "/forum", label: "Forum", icon: MessageSquare },
-    { href: "/leaderboard", label: "Leaderboard", icon: Trophy, color: "text-amber-500" },
+    { href: "/forum", label: "Forum", icon: MessagesSquare },
+    {
+      href: "/leaderboard",
+      label: "Leaderboard",
+      icon: Trophy,
+      color: "text-amber-500",
+    },
     { href: "/blogs", label: "Blogs", icon: FileText },
     { href: "/about", label: "About Us", icon: BookOpen },
     { href: "/contact", label: "Contact Us", icon: MessageSquare },

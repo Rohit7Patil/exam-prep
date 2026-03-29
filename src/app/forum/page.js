@@ -56,6 +56,7 @@ export default async function ForumPage({ searchParams }) {
   const formattedThreads = threads.map((thread) => ({
     id: thread.id,
     title: thread.title,
+    slug: thread.slug,
     content: thread.content,
     pinned: thread.pinned,
     viewsCount: thread.viewsCount,

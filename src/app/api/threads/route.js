@@ -1,5 +1,25 @@
 import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/getAuthUser";
+import { slugify } from "@/lib/slugify";
+
+/**
+ * Generates a unique slug for a thread based on its title.
+ */
+async function generateUniqueSlug(title) {
+  const baseSlug = slugify(title);
+  let slug = baseSlug;
+  let counter = 1;
+
+  while (true) {
+    const existing = await prisma.thread.findFirst({
+      where: { slug: slug },
+    });
+    if (!existing) break;
+    slug = `${baseSlug}-${counter}`;
+    counter++;
+  }
+  return slug;
+}
 
 /**
  * GET /api/threads?tag=&search=&page=1&limit=20
@@ -108,9 +128,12 @@ export async function POST(req) {
       );
     }
 
+    const slug = await generateUniqueSlug(title);
+
     const thread = await prisma.thread.create({
       data: {
         title: title.trim(),
+        slug,
         content: content.trim(),
         authorId: user.id,
         tags: {

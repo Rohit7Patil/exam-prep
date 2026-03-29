@@ -4,7 +4,7 @@ import { Pin, Tag, Eye, MessageSquare } from "lucide-react";
 export default function ThreadRow({ thread }) {
   return (
     <Link
-      href={`/forum/${thread.id}`}
+      href={`/forum/${thread.slug}`}
       className="block rounded-lg border border-border/40 bg-card p-4 transition hover:border-border/80 hover:shadow-sm"
     >
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
