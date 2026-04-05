@@ -2,7 +2,6 @@
   "name": "forum",
   "version": "0.1.0",
   "private": true,
-  "prisma": {},
   "scripts": {
     "dev": "set NEXT_DISABLE_TURBOPACK=1 && next dev",
     "build": "next build",
