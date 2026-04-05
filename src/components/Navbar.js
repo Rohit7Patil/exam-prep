@@ -18,6 +18,7 @@ import {
   Menu,
   X,
   ShieldCheck,
+  BookHeart,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -32,6 +33,12 @@ export default function Navbar() {
   const navLinks = [
     { href: "/questions", label: "Question Bank", icon: BookOpen },
     { href: "/forum", label: "Forum", icon: MessagesSquare },
+    {
+      href: "/stories",
+      label: "Aspirants Stories",
+      icon: BookHeart,
+      color: "text-rose-500",
+    },
     {
       href: "/leaderboard",
       label: "Leaderboard",

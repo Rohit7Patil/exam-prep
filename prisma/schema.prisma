@@ -8,20 +8,23 @@ datasource db {
 }
 
 model User {
-  id                 String        @id @default(uuid()) @db.Uuid
-  clerkUserId        String        @unique
+  id                 String         @id @default(uuid()) @db.Uuid
+  clerkUserId        String         @unique
   username           String?
   avatarUrl          String?
-  createdAt          DateTime      @default(now())
-  updatedAt          DateTime      @updatedAt
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
   achievements       Achievement[]
   blogs              Blog[]
   replies            Reply[]
-  verificationsGiven Reply[]       @relation("VerifiedBy")
+  verificationsGiven Reply[]        @relation("VerifiedBy")
   threads            Thread[]
   userRoles          UserRole[]
   stats              UserStats?
   votes              Vote[]
+  stories            Story[]
+  storyComments      StoryComment[] @relation("StoryComments")
+  storyLikes         StoryLike[]
 
   @@map("users")
 }
@@ -178,6 +181,68 @@ model Achievement {
 
   @@unique([userId, slug])
   @@map("achievements")
+}
+
+// ─── Aspirants Stories ──────────────────────────────────────
+
+model StoryCategory {
+  id        String   @id @default(uuid()) @db.Uuid
+  slug      String   @unique
+  label     String
+  emoji     String   @default("📖")
+  color     String   @default("#6366f1") // hex color for badge
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  stories   Story[]
+
+  @@map("story_categories")
+}
+
+model Story {
+  id            String         @id @default(uuid()) @db.Uuid
+  title         String
+  slug          String         @unique
+  content       String
+  excerpt       String?
+  viewsCount    Int            @default(0)
+  likesCount    Int            @default(0)
+  commentsCount Int            @default(0)
+  featured      Boolean        @default(false)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  authorId      String         @db.Uuid
+  categoryId    String?        @db.Uuid
+  author        User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  category      StoryCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  comments      StoryComment[]
+  likes         StoryLike[]
+
+  @@map("stories")
+}
+
+model StoryComment {
+  id        String   @id @default(uuid()) @db.Uuid
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  storyId   String   @db.Uuid
+  authorId  String   @db.Uuid
+  story     Story    @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  author    User     @relation("StoryComments", fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@map("story_comments")
+}
+
+model StoryLike {
+  id        String   @id @default(uuid()) @db.Uuid
+  createdAt DateTime @default(now())
+  storyId   String   @db.Uuid
+  userId    String   @db.Uuid
+  story     Story    @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, storyId])
+  @@map("story_likes")
 }
 
 enum VoteTargetType {

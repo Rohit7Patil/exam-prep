@@ -12,6 +12,7 @@ import {
   FileText,
   ShieldCheck,
   BookOpen,
+  BookHeart,
 } from "lucide-react";
 
 const navItems = [
@@ -21,6 +22,7 @@ const navItems = [
   { href: "/admin/replies", label: "Replies", icon: MessageSquare },
   { href: "/admin/threads", label: "Threads", icon: FileText },
   { href: "/admin/blogs", label: "Blogs", icon: BookOpen },
+  { href: "/admin/stories", label: "Stories", icon: BookHeart },
   { href: "/admin/contact", label: "Contacts", icon: MessageSquare },
 ];
 
